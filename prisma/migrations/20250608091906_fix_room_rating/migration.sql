@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Room" ALTER COLUMN "roomRating" SET DATA TYPE DECIMAL(4,2);

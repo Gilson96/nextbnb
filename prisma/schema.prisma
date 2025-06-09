@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Place {
+  id        Int     @id @default(autoincrement())
+  placeName String?
+  hosts     Host[]
+}
+
+model Host {
+  id              Int    @id @default(autoincrement())
+  hostName        String
+  hostingYears    Int
+  hostDescription String
+  placeId         Int
+  place           Place  @relation(fields: [placeId], references: [id])
+  rooms           Room[]
+}
+
+model Room {
+  id              Int             @id @default(autoincrement())
+  roomDescription String
+  roomType        String
+  roomRating      Decimal         @default(0) @db.Decimal(4, 2)
+  roomLatitude    Decimal         @default(0) @db.Decimal(9, 6)
+  roomLongitude   Decimal         @default(0) @db.Decimal(9, 6)
+  roomPrice       Int
+  roomAbout       String
+  hostId          Int
+  host            Host            @relation(fields: [hostId], references: [id])
+  roomAmenities   RoomAmenities[]
+  roomReviews     RoomReviews[]
+  roomGallery     RoomGallery[]
+}
+
+model RoomAmenities {
+  id          Int    @id @default(autoincrement())
+  amenityName String
+  roomId      Int
+  room        Room   @relation(fields: [roomId], references: [id])
+}
+
+model RoomReviews {
+  id                Int    @id @default(autoincrement())
+  reviewPersonName  String
+  reviewDescription String
+  reviewDate        String
+  roomId            Int
+  room              Room   @relation(fields: [roomId], references: [id])
+}
+
+model RoomGallery {
+  id       Int    @id @default(autoincrement())
+  imageUrl String
+  roomId   Int
+  room     Room   @relation(fields: [roomId], references: [id])
+}
