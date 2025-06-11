@@ -7,14 +7,24 @@ type RoomsListProps = {
   roomId: string;
   roomPrice: number;
   roomRating: number;
+  roomImage: string;
 };
 
-const RoomsList = ({ placeName, roomId, roomPrice, roomRating }: RoomsListProps) => {
+const RoomsList = ({
+  placeName,
+  roomId,
+  roomImage,
+  roomPrice,
+  roomRating,
+}: RoomsListProps) => {
   return (
     <Link href={`room/${roomId}`}>
       <div>
-        <div className="flex h-[7rem] w-[7rem] justify-end rounded-2xl bg-neutral-400 p-[6%]">
-          <FaRegHeart />
+        <div
+          style={{ backgroundImage: `url(${roomImage})` }}
+          className="flex h-[10rem] w-[10rem] justify-end rounded-2xl bg-neutral-400 bg-cover bg-center bg-no-repeat p-[6%]"
+        >
+          {" "}
         </div>
         <div className="text-sm">
           <p className="font-medium">Room in {placeName}</p>

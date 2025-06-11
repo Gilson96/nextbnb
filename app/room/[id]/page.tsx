@@ -4,13 +4,8 @@ import Header, { RoomDetails } from "@/components/room/header";
 import Host from "@/components/room/host";
 import Maps from "@/components/room/map";
 import Reviews from "@/components/room/reviews";
-import {
-  getHosts,
-  getRoomGallery,
-  getRooms,
-} from "@/lib/actions/place.actions";
+import { getHosts, getRoomGallery, getRooms } from "@/lib/actions/place.actions";
 import Link from "next/link";
-import { RxAvatar } from "react-icons/rx";
 
 const Room = async (props: { params: Promise<{ id: string }> }) => {
   const { id } = await props.params;

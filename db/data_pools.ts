@@ -30,30 +30,30 @@ export const galleryPool = [
   },
   {
     doubleRoom: [
-       "https://i.postimg.cc/BbPXdhwM/double-bed-room.jpg",
-       "https://i.postimg.cc/8P1CdzTZ/double-living-room.jpg",
-       "https://i.postimg.cc/sfJj2C57/apartement-bathroom-2.jpg",
+      "https://i.postimg.cc/BbPXdhwM/double-bed-room.jpg",
+      "https://i.postimg.cc/8P1CdzTZ/double-living-room.jpg",
+      "https://i.postimg.cc/sfJj2C57/apartement-bathroom-2.jpg",
     ],
   },
   {
     oneBedroomFlat: [
-       "https://i.postimg.cc/jSHvpcpx/studio-flat-kitchen.jpg",
-       "https://i.postimg.cc/GmKgBzqM/studio-flat-1.jpg",
-       "https://i.postimg.cc/ZqDfHnkp/apartement-bathroom-3.jpg",
+      "https://i.postimg.cc/jSHvpcpx/studio-flat-kitchen.jpg",
+      "https://i.postimg.cc/GmKgBzqM/studio-flat-1.jpg",
+      "https://i.postimg.cc/ZqDfHnkp/apartement-bathroom-3.jpg",
     ],
   },
   {
     studio: [
-       "https://i.postimg.cc/wM5cCTrW/studio-flat-with-kitchen-and-living-room.jpgS",
-       "https://i.postimg.cc/FsZVGz3z/apartement-bedroom-1.jpg",
-       "https://i.postimg.cc/g2b7H0p0/apartement-bathroom-6.jpg",
+      "https://i.postimg.cc/wM5cCTrW/studio-flat-with-kitchen-and-living-room.jpgS",
+      "https://i.postimg.cc/FsZVGz3z/apartement-bedroom-1.jpg",
+      "https://i.postimg.cc/g2b7H0p0/apartement-bathroom-6.jpg",
     ],
   },
   {
     entirePlace: [
-       "https://i.postimg.cc/kG9tbrJz/apartement-bathroom-5.jpg",
-       "https://i.postimg.cc/tCBVYmLv/studio-flat-kitchen-1.jpg",
-       "https://i.postimg.cc/JzB4M6mk/double-bed-room-4.jpg",
+      "https://i.postimg.cc/kG9tbrJz/apartement-bathroom-5.jpg",
+      "https://i.postimg.cc/tCBVYmLv/studio-flat-kitchen-1.jpg",
+      "https://i.postimg.cc/JzB4M6mk/double-bed-room-4.jpg",
     ],
   },
 ];

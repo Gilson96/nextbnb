@@ -1,20 +1,45 @@
+import Filters from "@/components/home/filters";
 import Header from "@/components/home/header";
 import RoomsList from "@/components/home/roomsList";
-import { getPlaces, getRooms } from "@/lib/actions/place.actions";
+import {
+  GalleryTypes,
+  getHosts,
+  getPlaces,
+  getRoomGallery,
+  getRooms,
+  HostsTypes,
+  PlacesType,
+  RoomsType,
+} from "@/lib/actions/place.actions";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default async function Home() {
-  const rooms = await getRooms()
-  const places = await getPlaces()
-  
+  const oldRooms: RoomsType[] = await getRooms();
+  const places: PlacesType[] = await getPlaces();
+  const gallery: GalleryTypes[] = await getRoomGallery();
+  const hosts: HostsTypes[] = await getHosts();
+
+  // Convert Decimal to number
+  // Fix prisma Decimal data type
+  // it loops and cast
+  const rooms = oldRooms.map((room) => ({
+    ...room,
+    roomRating: Number(room.roomRating),
+    roomLongitude: Number(room.roomLongitude),
+    roomLatitude: Number(room.roomLatitude)
+  }));
+
+  const findImage = (roomId: string) => {
+    return gallery.filter((image) => image.roomId === roomId);
+  };
+
   return (
     <main className="w-full bg-white">
-      <div className="mb-[5%] flex w-full items-center justify-center p-[2%]">
-        <Header />
-      </div>
-      {places.map((place, index) => (
-        <div key={index} className="flex flex-col p-[2%]">
+      <Header places={places} hosts={hosts} rooms={rooms} />
+      <Filters places={places} />
+      {places.map((place, i) => (
+        <div key={i} className="flex flex-col p-[2%]">
           <Link
             href={`/place/${place.placeName}`}
             className="flex items-center"
@@ -25,16 +50,19 @@ export default async function Home() {
             <ChevronRight size={20} />
           </Link>
           <div className="flex overflow-hidden overflow-x-auto py-[3%]">
-            {rooms.filter(room => room.roomLocation === place.placeName).map((room) => (
-              <div className="py-[2%] pr-[5%]">
-                <RoomsList
-                  placeName={place.placeName!}
-                  roomId={room.id}
-                  roomPrice={room.roomPrice}
-                  roomRating={Number(room.roomRating)}
-                />
-              </div>
-            ))}
+            {rooms
+              .filter((room) => room.roomLocation === place.placeName)
+              .map((room, index) => (
+                <div key={index} className="py-[2%] pr-[5%]">
+                  <RoomsList
+                    placeName={place.placeName!}
+                    roomId={room.id}
+                    roomPrice={room.roomPrice}
+                    roomRating={Number(room.roomRating)}
+                    roomImage={findImage(room.id)[0].imageUrl.at(i + -1)!}
+                  />
+                </div>
+              ))}
           </div>
         </div>
       ))}

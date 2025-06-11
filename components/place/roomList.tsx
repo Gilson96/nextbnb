@@ -1,4 +1,5 @@
 import { roomTypes } from "@/db/data_pools";
+import { getRoomGallery } from "@/lib/actions/place.actions";
 import { HeartIcon, Star } from "lucide-react";
 import Link from "next/link";
 
@@ -9,10 +10,10 @@ type RooomListProps = {
   hostingYears: number;
   roomType: string;
   roomPrice: number;
-  id: number
+  id: string
 };
 
-const RoomList = ({
+const RoomList = async ({
   roomDescription,
   roomRating,
   roomPrice,
@@ -21,11 +22,17 @@ const RoomList = ({
   id,
   hostingYears,
 }: RooomListProps) => {
+  const gallery = await getRoomGallery()
+
+  const randomNumber = Math.floor(Math.random() * 3);
+  const findRoomImage = gallery.find(image => image.roomId === id)?.imageUrl.at(randomNumber)
+  
   return (
     <Link href={`/room/${id}`}>
       <div className="flex w-full flex-col">
-        <div className="h-[15rem] rounded-2xl bg-neutral-400 p-[3%] flex justify-end">
-          <HeartIcon size={25} />
+        <div 
+        style={{backgroundImage: `url(${findRoomImage})`}}
+        className="h-[15rem] w-[20rem] rounded-2xl bg-neutral-400 bg-no-repeat bg-cover bg-center">
         </div>
         <div className="flex w-full flex-col px-0.5 py-[2%]">
           <div className="flex items-center justify-between">
@@ -41,7 +48,7 @@ const RoomList = ({
             <span className="text-neutral-500">&#183;</span>
             <p>Hosting for {hostingYears} years</p>
           </div>
-          <p>{roomType}</p>
+          <p className="text-sm font-bold">{roomType}</p>
           <div className="flex items-center">
             <div className="flex underline">
               <p className="font-bold">£{roomPrice}</p>
