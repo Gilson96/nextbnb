@@ -1,32 +1,16 @@
 import Header from "@/components/home/header";
 import RoomsList from "@/components/home/roomsList";
-import {
-  getPlaces,
-  getBoltonRooms,
-  getOldHamRooms,
-  getSalfordRooms,
-  getStockportRooms,
-} from "@/lib/actions/place.actions";
+import { getPlaces, getRooms } from "@/lib/actions/place.actions";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default async function Home() {
-  const places = await getPlaces();
-  const oldHamRooms = await getOldHamRooms();
-  const salfordRooms = await getSalfordRooms();
-  const boltonRooms = await getBoltonRooms();
-  const stockportRooms = await getStockportRooms();
-
-  const allFilteredRooms = [
-    boltonRooms,
-    oldHamRooms,
-    salfordRooms,
-    stockportRooms,
-  ];
-
+  const rooms = await getRooms()
+  const places = await getPlaces()
+  
   return (
     <main className="w-full bg-white">
-      <div className="w-full p-[2%] mb-[5%] flex justify-center items-center">
+      <div className="mb-[5%] flex w-full items-center justify-center p-[2%]">
         <Header />
       </div>
       {places.map((place, index) => (
@@ -41,7 +25,7 @@ export default async function Home() {
             <ChevronRight size={20} />
           </Link>
           <div className="flex overflow-hidden overflow-x-auto py-[3%]">
-            {allFilteredRooms[index].map((room) => (
+            {rooms.filter(room => room.roomLocation === place.placeName).map((room) => (
               <div className="py-[2%] pr-[5%]">
                 <RoomsList
                   placeName={place.placeName!}

@@ -1,11 +1,11 @@
-import { getAmenities } from "@/lib/actions/place.actions";
+import { getRoomAmenities } from "@/lib/actions/place.actions";
 
 type AmenitiesProps = {
-  roomId: number;
+  roomId: string;
 };
 
 const Amenities = async ({ roomId }: AmenitiesProps) => {
-  const amenities = await getAmenities();
+  const amenities = await getRoomAmenities();
 
   const findAmenities = amenities.filter(
     (amenity) => amenity.roomId === roomId,

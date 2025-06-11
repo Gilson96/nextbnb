@@ -1,19 +1,24 @@
 import Amenities from "@/components/room/amenities";
 import BookingCalendar from "@/components/room/bookingCalendar";
-import Header from "@/components/room/header";
+import Header, { RoomDetails } from "@/components/room/header";
 import Host from "@/components/room/host";
 import Maps from "@/components/room/map";
 import Reviews from "@/components/room/reviews";
-import { getHosts, getReviews, getRooms } from "@/lib/actions/place.actions";
+import {
+  getHosts,
+  getRoomGallery,
+  getRooms,
+} from "@/lib/actions/place.actions";
 import Link from "next/link";
 import { RxAvatar } from "react-icons/rx";
 
-const Room = async (props: { params: Promise<{ id: number }> }) => {
+const Room = async (props: { params: Promise<{ id: string }> }) => {
   const { id } = await props.params;
   const rooms = await getRooms();
   const hosts = await getHosts();
+  const gallery = await getRoomGallery();
 
-  const findRoom = rooms.find((room) => room.id === Number(id));
+  const findRoom = rooms.find((room) => room.id === id);
   const findHost = hosts.find((host) => host.id === findRoom?.hostId);
 
   const castRoomCoor = {
@@ -25,33 +30,16 @@ const Room = async (props: { params: Promise<{ id: number }> }) => {
     findRoom.roomDescription.length,
   );
 
-  console.log(placeName);
-
   return (
-    <main className="flex flex-col bg-neutral-500">
-      <Header />
+    <main className="flex w-full flex-col bg-neutral-500">
+      <Header roomId={findRoom?.id!} />
       <div className="flex w-full flex-col items-start justify-start rounded-t-2xl border-t bg-white p-[3%] pb-[7rem]">
-        {/* room type */}
-        <div className="my-[5%] flex w-full flex-col items-center gap-1">
-          <p className="text-xl font-bold">{findRoom?.roomDescription}</p>
-          <div className="flex items-center gap-1 text-sm text-neutral-500">
-            <p>{findRoom?.roomDescription}</p>
-            <span className="text-neutral-500">&#183;</span>
-            <p>{findRoom?.roomType}</p>
-          </div>
-        </div>
-        <hr className="h-[1px] w-full bg-neutral-300" />
-
-        {/* room host */}
-        <div className="my-[5%] flex items-center gap-1">
-          <RxAvatar size={50} />
-          <div>
-            <p>Stay with {findHost?.hostName}</p>
-            <p className="text-neutral-500">
-              {findHost?.hostingYears} years hosting
-            </p>
-          </div>
-        </div>
+        <RoomDetails
+          roomDescription={findRoom?.roomDescription!}
+          roomType={findRoom?.roomType!}
+          hostName={findHost?.hostName!}
+          hostingYears={findHost?.hostingYears!}
+        />
         <hr className="h-[1px] w-full bg-neutral-300" />
 
         {/* room about */}

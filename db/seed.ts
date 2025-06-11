@@ -2,10 +2,11 @@ import { PrismaClient } from "@/lib/generated/prisma";
 import {
   places,
   amenitiesPool,
-  imageBase,
+  galleryPool,
   reviewNames,
   roomTypes,
   ukHostNames,
+  users,
 } from "./data_pools";
 import {
   getRandomElements,
@@ -17,6 +18,18 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.roomAmenities.deleteMany();
+  await prisma.roomGallery.deleteMany();
+  await prisma.roomReviews.deleteMany();
+  await prisma.room.deleteMany();
+  await prisma.host.deleteMany();
+  await prisma.place.deleteMany();
+  await prisma.account.deleteMany();
+  await prisma.verificationToken.deleteMany();
+  await prisma.session.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.user.createMany({ data: users });
+
   let reviewIndex = 0;
   let hostIndex = 0;
   let roomCounter = 0;
@@ -28,6 +41,13 @@ async function main() {
         placeName,
       },
     });
+
+    // Example:
+    // If roomTypes = ["Apartment", "Studio", "House"] and:
+    // i = 0 → 0 % 3 = 0 → selects roomTypes[0] → "Apartment"
+    // i = 1 → 1 % 3 = 1 → selects roomTypes[1] → "Studio"
+    // i = 2 → 2 % 3 = 2 → selects roomTypes[2] → "House"
+    // i = 3 → 3 % 3 = 0 → selects roomTypes[0] → "Apartment" again
 
     // Add 5 hosts per place
     for (let i = 0; i < 5; i++) {
@@ -58,6 +78,7 @@ Experience Manchester like a local.`;
           roomLatitude: randomCoord(),
           roomLongitude: parseFloat((-2.24 + Math.random() * 0.1).toFixed(6)),
           roomPrice: randomPrice(),
+          roomLocation: placeName,
           roomAbout,
           hostId: host.id,
         },
@@ -75,11 +96,19 @@ Experience Manchester like a local.`;
       // for each number, it bulds an object
       // then takes the created roomGallery
       // and inserts all 3
-      const gallery = [1, 2, 3].map((num) => ({
-        roomId: room.id,
-        imageUrl: `${imageBase}/${placeName.toLowerCase()}-${i + 1}-${num}.jpg`,
-      }));
-      await prisma.roomGallery.createMany({ data: gallery });
+      const gallery = () => {
+        if (roomType === "Single room")
+          return { roomId: room.id, imageUrl: galleryPool[0].singleRoom };
+        if (roomType === "Double room")
+          return { roomId: room.id, imageUrl: galleryPool[1].doubleRoom };
+        if (roomType === "1-bedroom apartment")
+          return { roomId: room.id, imageUrl: galleryPool[2].oneBedroomFlat };
+        if (roomType === "Studio")
+          return { roomId: room.id, imageUrl: galleryPool[3].studio };
+        if (roomType === "Entire place")
+          return { roomId: room.id, imageUrl: galleryPool[4].entirePlace };
+      };
+      await prisma.roomGallery.createMany({ data: gallery()! });
 
       // Add 3 reviews with random names and descriptions
       const roomReviews = Array.from({ length: 3 }, () => {

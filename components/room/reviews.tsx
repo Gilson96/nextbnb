@@ -1,4 +1,4 @@
-import { getReviews } from "@/lib/actions/place.actions";
+import { getRoomReviews } from "@/lib/actions/place.actions";
 import { Star } from "lucide-react";
 import {
   Carousel,
@@ -9,12 +9,12 @@ import {
 } from "@/components/ui/carousel";
 
 type ReviewsProps = {
-  roomId: number;
+  roomId: string;
   roomRating: number;
 };
 
 const Reviews = async ({ roomId, roomRating }: ReviewsProps) => {
-  const reviews = await getReviews();
+  const reviews = await getRoomReviews();
 
   const findReviews = reviews.filter((review) => review.roomId === roomId);
 

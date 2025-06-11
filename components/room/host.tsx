@@ -1,16 +1,16 @@
-import { getHosts, getReviews } from "@/lib/actions/place.actions";
+import { getHosts, getRoomReviews } from "@/lib/actions/place.actions";
 import { Star } from "lucide-react";
 import { RxAvatar } from "react-icons/rx";
 
 type HostProps = {
-  hostId: number;
+  hostId: string;
   roomRating: number 
-  roomId: number
+  roomId: string
 };
 
 const Host = async ({ hostId, roomRating, roomId }: HostProps) => {
   const hosts = await getHosts();
-  const reviews = await getReviews();
+  const reviews = await getRoomReviews();
 
   const findHosts = hosts.find((host) => host.id === hostId);
   const findReviews = reviews.filter((review) => review.roomId === roomId);

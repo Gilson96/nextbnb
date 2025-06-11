@@ -4,7 +4,7 @@ import { FaStar } from "react-icons/fa";
 
 type RoomsListProps = {
   placeName: string;
-  roomId: number;
+  roomId: string;
   roomPrice: number;
   roomRating: number;
 };
