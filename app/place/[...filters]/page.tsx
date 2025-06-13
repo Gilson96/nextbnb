@@ -5,16 +5,20 @@ import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
 type PageProps = {
   params: {
-    filters: string;
+    location: string;
+    type: string;
+    price: string;
   };
 };
 
 const Page = async ({ params }: PageProps) => {
-  const [location, type, price] = await params.filters;
+  const [location] = await params.location;
+  const [type] = await params.type;
+  const [price] = await params.price;
 
   const rooms = await getRooms();
   const hosts = await getHosts();
-  const places = await getPlaces()
+  const places = await getPlaces();
 
   const showRoomsByFilters = () => {
     //clone to avoid mutating
@@ -54,22 +58,24 @@ const Page = async ({ params }: PageProps) => {
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <Header places={places} rooms={rooms} />
-      <i className="w-full flex justify-end pr-[5%] pb-[7%]">
-      <FiltersSetup places={places}/>
+      <i className="flex w-full justify-end pr-[5%] pb-[7%]">
+        <FiltersSetup places={places} />
       </i>
       <div className="flex flex-col gap-2">
-      {showRoomsByFilters().map((room, index) => (
-        <RoomList
-          key={index}
-          hostName={hosts.find((h) => h.id === room.hostId)?.hostName!}
-          hostingYears={hosts.find((h) => h.id === room.hostId)?.hostingYears!}
-          id={room.id}
-          roomDescription={room.roomDescription}
-          roomPrice={room.roomPrice}
-          roomRating={Number(room.roomRating)}
-          roomType={room.roomType}
-        />
-      ))}
+        {showRoomsByFilters().map((room, index) => (
+          <RoomList
+            key={index}
+            hostName={hosts.find((h) => h.id === room.hostId)?.hostName!}
+            hostingYears={
+              hosts.find((h) => h.id === room.hostId)?.hostingYears!
+            }
+            id={room.id}
+            roomDescription={room.roomDescription}
+            roomPrice={room.roomPrice}
+            roomRating={Number(room.roomRating)}
+            roomType={room.roomType}
+          />
+        ))}
       </div>
     </main>
   );
