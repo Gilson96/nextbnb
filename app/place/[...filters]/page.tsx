@@ -5,7 +5,7 @@ import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
 type PageProps = {
   params: {
-    filters: string[];
+    filters: string;
   };
 };
 
