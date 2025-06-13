@@ -1,4 +1,4 @@
-import Filters from "@/components/home/filters";
+import FiltersSetup from "@/components/home/filtersSetup";
 import Header from "@/components/home/header";
 import RoomsList from "@/components/home/roomsList";
 import {
@@ -15,20 +15,10 @@ import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 
 export default async function Home() {
-  const oldRooms: RoomsType[] = await getRooms();
+  const rooms: RoomsType[] = await getRooms();
   const places: PlacesType[] = await getPlaces();
   const gallery: GalleryTypes[] = await getRoomGallery();
   const hosts: HostsTypes[] = await getHosts();
-
-  // Convert Decimal to number
-  // Fix prisma Decimal data type
-  // it loops and cast
-  const rooms = oldRooms.map((room) => ({
-    ...room,
-    roomRating: Number(room.roomRating),
-    roomLongitude: Number(room.roomLongitude),
-    roomLatitude: Number(room.roomLatitude)
-  }));
 
   const findImage = (roomId: string) => {
     return gallery.filter((image) => image.roomId === roomId);
@@ -36,8 +26,10 @@ export default async function Home() {
 
   return (
     <main className="w-full bg-white">
-      <Header places={places} hosts={hosts} rooms={rooms} />
-      <Filters places={places} />
+      <Header places={places} rooms={rooms} />
+      <div className="w-full flex justify-end items-end px-[2%]">
+      <FiltersSetup places={places} />
+      </div>
       {places.map((place, i) => (
         <div key={i} className="flex flex-col p-[2%]">
           <Link

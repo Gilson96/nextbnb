@@ -1,85 +1,95 @@
 "use client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { AlignJustify, ChevronRightIcon } from "lucide-react";
+import { AlignJustify, ShoppingCart, X } from "lucide-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Link from "next/link";
 import { useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { HostsTypes, PlacesType, RoomsType } from "@/lib/actions/place.actions";
+import { PlacesType, RoomsType } from "@/lib/actions/place.actions";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import HeaderDropdown from "./headerDropdown";
+import HeaderSearch from "./headerSearch";
+import { useStore } from "@/store";
 
 type HeaderProps = {
   places: PlacesType[];
   rooms: RoomsType[];
-  hosts: HostsTypes[];
 };
 
-export default function Header({ places, rooms, hosts }: HeaderProps) {
+export default function Header({ places, rooms }: HeaderProps) {
   const [inputValue, setInputValue] = useState<string>("");
+  const [openInput, setOpenInput] = useState<boolean>(false);
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
+  const cart = useStore((state) => state.cart)
+  // adds 'type' property 'as const'
+  // to typescript understands which one is the one be call
+  // in order to access each array's property
+  // Discrimination union
+  const searchPool = [
+    ...(places || []).map((place) => ({ ...place, type: "place" as const })),
+    ...(rooms || []).map((room) => ({ ...room, type: "room" as const })),
+  ];
+
+  const searchPlacesOrRooms = searchPool.filter((search) => {
+    if (search.type === "place") {
+      return search.placeName.toLocaleLowerCase().includes(inputValue);
+    } else if (search.type === "room") {
+      return search.roomDescription.toLocaleLowerCase().includes(inputValue);
+    }
+  });
 
   return (
-    <div className="mb-[5%] flex h-[5rem] w-full items-center justify-between border-b p-[2%] shadow">
+    <div className="flex h-[5rem] w-full items-center justify-between border-b p-[2%] shadow">
       <Link href={"/"} className="flex items-start text-xl">
         <p className="font-bold">Next</p>
         <p className="font-bold text-cyan-500">bnb</p>
       </Link>
-      <DropdownMenu>
-        <DropdownMenuTrigger className="flex h-[3rem] items-center justify-center gap-2 rounded-full border px-[10%] py-[2%] shadow">
+
+      <AlertDialog open={openInput} onOpenChange={setOpenInput}>
+        <AlertDialogTrigger className="flex h-[3rem] items-center justify-center gap-2 rounded-full border px-[10%] py-[2%] shadow">
           <FaMagnifyingGlass />
           <p>Start your search</p>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-full p-[2%]">
-          <Tabs defaultValue="places" className="mr-[2rem] w-[400px]">
-            <DropdownMenuLabel>
-              <TabsList className="w-full">
-                <TabsTrigger value="places">Places</TabsTrigger>
-                <TabsTrigger value="rooms">Rooms</TabsTrigger>
-                <TabsTrigger value="hosts">Hosts</TabsTrigger>
-              </TabsList>
-            </DropdownMenuLabel>
-            <DropdownMenuItem>
-              <TabsContent
-                value="places"
-                className="grid h-[7rem] grid-cols-2 gap-3"
-              >
-                {places?.map((place, index) => (
-                  <Link
-                    key={index}
-                    className=""
-                    href={`/place/${place.placeName}/all/all`}
-                  >
-                    <p className="text-base underline">{place.placeName}</p>
-                  </Link>
-                ))}
-                <div className="flex w-full items-center">
-                  <p>see all</p>
-                  <ChevronRightIcon />
-                </div>
-              </TabsContent>
-              <TabsContent value="rooms">
-                {rooms?.slice(0, 3).map((room, index) => (
-                  <div className="flex w-full items-center justify-between gap-2 overflow-hidden p-[2%]">
-                    <p></p>
-                  </div>
-                ))}
-              </TabsContent>
-            </DropdownMenuItem>
-          </Tabs>
-          {/* <DropdownMenuSeparator /> */}
-        </DropdownMenuContent>
-      </DropdownMenu>
-      <i>
-        <AlignJustify />
-      </i>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex w-full items-center justify-between gap-2">
+              <input
+                type="text"
+                onChange={handleSearchInput}
+                value={inputValue}
+                placeholder="rooms, locations..."
+                className="flex h-[3rem] w-full items-center justify-center gap-2 rounded-full border p-[3%] italic shadow"
+              />
+              <AlertDialogCancel className="border-0 shadow-none">
+                <X />
+              </AlertDialogCancel>
+            </AlertDialogTitle>
+            <AlertDialogDescription className="my-[2%] flex flex-col items-center justify-center">
+              {inputValue.length === 0 ? (
+                <HeaderDropdown
+                  setOpenInput={setOpenInput}
+                  places={places}
+                  rooms={rooms}
+                />
+              ) : (
+                <HeaderSearch
+                  searchPlacesOrRooms={searchPlacesOrRooms}
+                  setOpenInput={setOpenInput}
+                />
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+        </AlertDialogContent>
+      </AlertDialog>
+      <div></div>
     </div>
   );
 }

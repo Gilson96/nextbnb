@@ -1,40 +1,67 @@
-import { Textarea } from "@/components/ui/textarea";
+"use client";
 import { Button } from "../ui/button";
+import { useStore } from "@/store";
+import { loadStripe } from "@stripe/stripe-js";
+import CheckoutForm from "@/components/checkout/CheckoutForm";
+import { Elements } from "@stripe/react-stripe-js";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type PaymentMethodProps = {
   hostName: string;
   roomPrice: number;
+  totalPrice: number;
+  setShowSuccessModal: Dispatch<SetStateAction<boolean>>;
 };
 
-const PaymentMethod = ({ hostName, roomPrice }: PaymentMethodProps) => {
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+);
+
+const PaymentMethod = ({
+  hostName,
+  roomPrice,
+  totalPrice,
+  setShowSuccessModal
+}: PaymentMethodProps) => {
+  const [clientSecret, setClientSecret] = useState("");
+  const bookingDays = useStore((state) => state.bookingDates);
+  const daysQuantity = Math.abs(
+    bookingDays.endDate?.getDate()! - bookingDays.startDate?.getDate()!,
+  );
+
+  const cartItems = { hostName, roomPrice, totalPrice, daysQuantity };
+
+  useEffect(() => {
+    const createPaymentIntent = async () => {
+      const res = await fetch("/api/create-payment-intent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: totalPrice }),
+      });
+      const data = await res.json();
+      setClientSecret(data.clientSecret);
+      console.log(data);
+    };
+
+    createPaymentIntent();
+  }, []);
+
+  if (!clientSecret) return <p className="my-[2%]">Loading...</p>;
+
   return (
-    <section className="flex flex-col p-[2%]">
-      <div className="flex flex-col items-center justify-center rounded-2xl border p-[2%] shadow">
-        Stripe
-      </div>
+    <section className="flex w-full flex-col p-[2%]">
       <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
-      <div className="flex flex-col ">
-        <p className="text-base">Write a message to the host</p>
-        <p>
-          Before you can continue, let {hostName} know a little about your trip
-          and why their place is a good fit.
-        </p>
-        <Textarea placeholder="Type your message here." />
-      </div>
-      <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
-      <div className="flex flex-col">
-        <p className="font-bold">Price details</p>
-        <div className="flex w-full items-center justify-between">
-          <p>{roomPrice} x 2 nights</p>
-          <p>£66.00</p>
-        </div>
-        <div className="flex w-full items-center justify-between font-bold">
-          <p>Total</p>
-          <p>£66.00</p>
-        </div>
-      </div>
-      <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
-      <Button className="border py-[7%] rounded-2xl text-base">Request to book</Button>
+      <p className="my-[3%] w-full place-self-start text-2xl font-bold">
+        Payement method
+      </p>
+      <Elements stripe={stripePromise} options={{ clientSecret }}>
+        <CheckoutForm
+          roomPrice={roomPrice}
+          daysQuantity={daysQuantity}
+          totalPrice={totalPrice}
+          setShowSuccessModal={setShowSuccessModal}
+        />
+      </Elements>
     </section>
   );
 };

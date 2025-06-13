@@ -2,7 +2,6 @@ import FiltersSetup from "@/components/home/filtersSetup";
 import Header from "@/components/home/header";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
-import { SlidersHorizontal } from "lucide-react";
 
 type PageProps = {
   params: {
@@ -11,7 +10,7 @@ type PageProps = {
 };
 
 const Page = async ({ params }: PageProps) => {
-  const [location, type, price] = params.filters;
+  const [location, type, price] = await params.filters;
 
   const rooms = await getRooms();
   const hosts = await getHosts();
@@ -54,7 +53,7 @@ const Page = async ({ params }: PageProps) => {
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
-      <Header />
+      <Header places={places} rooms={rooms} />
       <i className="w-full flex justify-end pr-[5%] pb-[7%]">
       <FiltersSetup places={places}/>
       </i>

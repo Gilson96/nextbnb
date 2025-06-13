@@ -12,9 +12,9 @@ const Amenities = async ({ roomId }: AmenitiesProps) => {
   );
 
   return (
-    <div className="my-[5%] flex flex-col gap-1">
-      <p className="text-xl font-bold">What this place offers</p>
-      <div className="grid grid-cols-2 grid-rows-2 gap-2">
+    <div className="my-[5%] w-full flex flex-col gap-1 md:my-0 md:p-[2%]">
+      <p className="text-xl font-bold md:mb-[2%]">What this place offers</p>
+      <div className="grid grid-cols-2 grid-rows-2 gap-2 md:w-[50%]">
         {findAmenities?.map((amenity, index) => (
           <li className="flex">
             <ul key={index} className="underline">
@@ -23,6 +23,7 @@ const Amenities = async ({ roomId }: AmenitiesProps) => {
           </li>
         ))}
       </div>
+      <hr className="h-[1px] w-full bg-neutral-300 mt-[5%] md:w-[48%]" />
     </div>
   );
 };

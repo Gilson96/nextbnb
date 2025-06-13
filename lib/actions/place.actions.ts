@@ -53,7 +53,14 @@ export async function getHosts() {
 }
 export async function getRooms() {
   const data = await prisma.room.findMany();
-  return data;
+  const rooms = data.map((room) => ({
+    ...room,
+    roomLongitude: (room.roomLongitude as Decimal).toNumber(),
+    roomLatitude: (room.roomLatitude as Decimal).toNumber(),
+    roomRating: (room.roomRating as Decimal).toNumber(), // Convert Decimal to number (if applicable)
+  }));
+
+  return rooms;
 }
 export async function getRoomAmenities() {
   const data = await prisma.roomAmenities.findMany();

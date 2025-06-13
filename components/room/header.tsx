@@ -1,14 +1,11 @@
 import { getRoomGallery } from "@/lib/actions/place.actions";
-import { ArrowLeft, Heart } from "lucide-react";
-import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { RxAvatar } from "react-icons/rx";
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 
 type HeaderProps = {
@@ -17,53 +14,40 @@ type HeaderProps = {
   hostName?: string;
   hostingYears?: number;
   roomId?: string;
+  roomAbout?: string;
 };
 
 const Header = async ({ roomId }: HeaderProps) => {
   const gallery = await getRoomGallery();
-
   const findImages = gallery.find((image) => image.roomId === roomId);
-  console.log(findImages?.imageUrl[0]);
+
   return (
-    <Carousel>
-      <CarouselContent className="w-full">
-        {findImages?.imageUrl.map((image, index) => (
-          <CarouselItem className="w-full">
-            <div
-              style={{
-                backgroundImage: `url("${findImages?.imageUrl[index]}")`,
-              }}
-              className={`flex h-[16rem] w-[27rem] items-start justify-between bg-cover bg-no-repeat pt-[4%] pr-[5%] pl-[3%]`}
-            >
-              <Link
-                href={"/"}
-                className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow"
-              >
-                <ArrowLeft size={20} />
-              </Link>
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-    </Carousel>
-    // <div className="flex h-[15rem] w-full justify-between bg-neutral-500 p-[2%]">
-    //  <Carousel/>
-    //   <Image
-    //     src={findImages?.imageUrl[0]!}
-    //     width={500}
-    //     height={500}
-    //     alt="Picture of the author"
-    //   />
-    //   <Link
-    //     href={"/"}
-    //     className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow"
-    //   >
-    //     <ArrowLeft size={20} />
-    //   </Link>
-    //   <i className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow">
-    //     <Heart size={20} />
-    //   </i>
-    // </div>
+    <>
+      <div className="md:hidden">
+        <Carousel>
+          <CarouselContent className="w-full">
+            {findImages?.imageUrl.map((image, index) => (
+              <CarouselItem className="w-full">
+                <div
+                  style={{
+                    backgroundImage: `url("${findImages?.imageUrl[index]}")`,
+                  }}
+                  className={`flex h-[16rem] w-[27rem] items-start justify-between bg-cover bg-no-repeat pt-[4%] pr-[5%] pl-[3%]`}
+                >
+                  <Link
+                    href={"/"}
+                    className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow"
+                  >
+                    <ArrowLeft size={20} />
+                  </Link>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
+      <div></div>
+    </>
   );
 };
 
@@ -95,6 +79,15 @@ export const RoomDetails = ({
         </div>
       </div>
     </>
+  );
+};
+
+export const RoomAbout = ({ roomAbout }: HeaderProps) => {
+  return (
+    <div className="my-[5%] flex flex-col gap-1">
+      <p className="text-xl font-bold">About this place</p>
+      <p>{roomAbout}</p>
+    </div>
   );
 };
 
