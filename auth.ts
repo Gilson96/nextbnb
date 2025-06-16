@@ -7,7 +7,7 @@ import type { NextAuthOptions } from "next-auth";
 
 const authConfig = {
   pages: {
-    signIn: "/sign-in",
+    signIn: "/sign-in", 
     error: "/sign-in",
   },
   session: {
@@ -42,7 +42,6 @@ const authConfig = {
               role: user.role,
             };
           }
-          return null;
         }
         return null;
       },

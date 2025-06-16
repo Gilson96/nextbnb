@@ -3,7 +3,7 @@ import Form from "@/components/signUser/form";
 import { redirect } from "next/navigation";
 
 const SignIn = async () => {
-  const session = auth;
+  const session = await auth();
 
   if (session) {
     return redirect("/");
