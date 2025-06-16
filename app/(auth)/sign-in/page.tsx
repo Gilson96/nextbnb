@@ -1,12 +1,13 @@
-import { auth } from "@/auth";
-import Form from "@/components/signUser/form";
+import { authConfig } from "@/auth";
+import { getServerSession } from "next-auth/next";
 import { redirect } from "next/navigation";
+import Form from "@/components/signUser/form";
 
 const SignIn = async () => {
-  const session = await auth();
+  const session = await getServerSession(authConfig);
 
   if (session) {
-    return redirect("/");
+    redirect("/");
   }
 
   return (

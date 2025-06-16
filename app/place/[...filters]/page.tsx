@@ -3,12 +3,13 @@ import Navigator from "@/components/navigator/navigator";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
-type PageProps = {
+interface PageProps {
   params: { filters: string[] };
-};
+}
 
 const Page = async ({ params }: PageProps) => {
-  const [location, type, price] = params.filters;
+  const [location = "all", type = "all", price = "all"] = params.filters;
+
 
   const rooms = await getRooms();
   const hosts = await getHosts();
@@ -54,10 +55,10 @@ const Page = async ({ params }: PageProps) => {
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <Navigator places={places} rooms={rooms} />
-      <i className="md:hidden flex w-full justify-end max-md:py-[3%] max-md:pr-[4%]">
+      <i className="flex w-full justify-end max-md:py-[3%] max-md:pr-[4%] md:hidden">
         <Filters places={places} />
       </i>
-      <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:mt-[5%] md:gap-[5rem] lg:flex lg lg:mt-0 lg:flex-row lg:p-[2%] lg:flex-wrap">
+      <div className="lg flex flex-col gap-2 md:mt-[5%] md:grid md:grid-cols-2 md:gap-[5rem] lg:mt-0 lg:flex lg:flex-row lg:flex-wrap lg:p-[2%]">
         {showRoomsByFilters().map((room, index) => (
           <RoomList
             key={index}

@@ -5,9 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthOptions } from "next-auth";
 
-const authConfig = {
+export const authConfig = {
   pages: {
-    signIn: "/sign-in", 
+    signIn: "/sign-in",
     error: "/sign-in",
   },
   session: {
@@ -22,40 +22,63 @@ const authConfig = {
         password: { type: "password" },
       },
       async authorize(credentials) {
-        if (credentials == null) return null;
+        console.log("Credentials received:", credentials);
 
-        const user = await prisma.user.findFirst({
-          where: { email: credentials.email as string },
+        if (!credentials?.email || !credentials?.password) {
+          console.error("Missing email or password");
+          return null;
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
         });
 
-        if (user && user.password) {
-          const isMatch = compareSync(
-            credentials.password as string,
-            user.password
-          );
-
-          if (isMatch) {
-            return {
-              id: user.id,
-              email: user.email,
-              name: user.name,
-              role: user.role,
-            };
-          }
+        if (!user) {
+          console.error("User not found for email:", credentials.email);
+          return null;
         }
-        return null;
+
+        if (!user.password) {
+          console.error("User has no password set.");
+          return null;
+        }
+
+        const isPasswordValid = compareSync(
+          credentials.password,
+          user.password,
+        );
+
+        if (!isPasswordValid) {
+          console.error("Password does not match.");
+          return null;
+        }
+
+        console.log("User authenticated successfully:", user.email);
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+        };
       },
     }),
   ],
   callbacks: {
-    async session({ session, user, trigger, token }: any) {
-      session.user.id = token.sub;
-      if (trigger === "update") {
-        session.user.name = user.name;
+    async jwt({ token, user }) {
+      if (user) {
+        token.email = user.email;
+        token.name = user.name;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session?.user) {
+        session.user.email = token.email;
+        session.user.name = token.name;
       }
       return session;
     },
   },
-} satisfies NextAuthOptions
+} satisfies NextAuthOptions;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
