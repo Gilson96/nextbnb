@@ -1,24 +1,21 @@
-import FiltersSetup from "@/components/home/filtersSetup";
-import Header from "@/components/home/header";
+import Navigator from "@/components/navigator/navigator";
 import RoomsList from "@/components/home/roomsList";
 import {
   GalleryTypes,
-  getHosts,
   getPlaces,
   getRoomGallery,
   getRooms,
-  HostsTypes,
   PlacesType,
   RoomsType,
 } from "@/lib/actions/place.actions";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import Filters from "@/components/navigator/filters";
 
 export default async function Home() {
   const rooms: RoomsType[] = await getRooms();
   const places: PlacesType[] = await getPlaces();
   const gallery: GalleryTypes[] = await getRoomGallery();
-  const hosts: HostsTypes[] = await getHosts();
 
   const findImage = (roomId: string) => {
     return gallery.filter((image) => image.roomId === roomId);
@@ -26,38 +23,38 @@ export default async function Home() {
 
   return (
     <main className="w-full bg-white">
-      <Header places={places} rooms={rooms} />
-      <div className="w-full flex justify-end items-end px-[2%]">
-      <FiltersSetup places={places} />
+      <Navigator places={places} rooms={rooms} />
+      <div className="flex w-full items-end justify-end p-[2%] lg:hidden">
+        <Filters places={places} />
       </div>
-      {places.map((place, i) => (
-        <div key={i} className="flex flex-col p-[2%]">
-          <Link
-            href={`/place/${place.placeName}`}
-            className="flex items-center"
-          >
-            <p className="text-lg font-bold">
-              Popular homes in {place.placeName}
-            </p>
-            <ChevronRight size={20} />
-          </Link>
-          <div className="flex overflow-hidden overflow-x-auto py-[3%]">
-            {rooms
-              .filter((room) => room.roomLocation === place.placeName)
-              .map((room, index) => (
-                <div key={index} className="py-[2%] pr-[5%]">
+      {places.map((place, i) => {
+        return (
+          <div key={i} className="flex flex-col p-[2%]">
+            <Link
+              href={`/place/${place.placeName}/all/all`}
+              className="flex w-fit items-center pb-2"
+            >
+              <p className="text-lg font-bold">
+                Popular homes in {place.placeName}
+              </p>
+              <ChevronRight size={20} />
+            </Link>
+            <div className="flex gap-5 py-[3%] max-xl:overflow-hidden max-xl:overflow-x-auto md:w-full xl:py-0">
+              {rooms
+                .filter((room) => room.roomLocation === place.placeName)
+                .map((room, index) => (
                   <RoomsList
-                    placeName={place.placeName!}
+                    roomDescription={room.roomDescription}
                     roomId={room.id}
                     roomPrice={room.roomPrice}
                     roomRating={Number(room.roomRating)}
                     roomImage={findImage(room.id)[0].imageUrl.at(i + -1)!}
                   />
-                </div>
-              ))}
+                ))}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </main>
   );
 }

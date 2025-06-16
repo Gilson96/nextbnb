@@ -1,6 +1,6 @@
 "use client";
 import { ArrowLeft } from "lucide-react";
-import Header from "../home/header";
+import Navigator from "../navigator/navigator";
 import { useRouter } from "next/navigation";
 
 const PlaceHeader = () => {
@@ -10,7 +10,7 @@ const PlaceHeader = () => {
       <p onClick={() => router.back()}>
         <ArrowLeft />
       </p>
-      <Header />
+      {/* <Navigator /> */}
       <div></div>
     </div>
   );

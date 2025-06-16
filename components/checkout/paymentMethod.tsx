@@ -50,7 +50,7 @@ const PaymentMethod = ({
 
   return (
     <section className="flex w-full flex-col p-[2%]">
-      <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
+      <hr className="lg:hidden my-[2%] h-[1px] w-full bg-neutral-300" />
       <p className="my-[3%] w-full place-self-start text-2xl font-bold">
         Payement method
       </p>

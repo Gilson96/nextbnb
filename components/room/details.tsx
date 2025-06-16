@@ -16,7 +16,7 @@ export const RoomDetails = ({
   roomAbout,
 }: RoomDetailsProps) => {
   return (
-    <div className="md:w-[50%] md:p-[2%] md:text-base">
+    <div className="md:w-[80%] lg:w-[60%] md:p-[2%] md:text-base">
       {/* room type */}
       <div className="my-[5%] flex w-full flex-col items-center gap-1 md:my-0 md:items-start">
         <p className="md:text-2xl text-xl font-bold">{roomDescription}</p>

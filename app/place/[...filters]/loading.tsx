@@ -1,22 +1,29 @@
-import Header from "@/components/home/header";
-import RoomList from "@/components/place/roomList";
 import { SlidersHorizontal, Star } from "lucide-react";
 
 const Loading = () => {
   return (
-    <main className="flex w-full flex-col items-center gap-2 justify-center">
-      <Header />
+    <main className="flex w-full flex-col items-center justify-center gap-2">
+      <div className="flex h-[5rem] w-full items-center justify-between border-b p-[2%] shadow">
+        <div className="flex items-start text-xl max-[425px]:hidden">
+          <p className="font-bold">Next</p>
+          <p className="font-bold text-cyan-500">bnb</p>
+        </div>
+      </div>
       <i className="flex w-full justify-end pr-[5%] pb-[7%]">
         <SlidersHorizontal />
       </i>
       <div className="flex flex-col gap-2">
-        <div className="h-[15rem] w-[20rem] animate animate-pulse rounded-2xl bg-neutral-300"></div>
+        <div className="animate h-[15rem] w-[20rem] animate-pulse rounded-2xl bg-neutral-300"></div>
         <div className="flex w-full flex-col px-0.5 py-[2%]">
           <div className="flex items-center justify-between">
-            <p className="font-bold w-[40%] h-[1rem] animate animate-pulse text-neutral-300 bg-neutral-300">s</p>
+            <p className="animate h-[1rem] w-[40%] animate-pulse bg-neutral-300 font-bold text-neutral-300">
+              s
+            </p>
             <div className="flex items-center gap-1">
               <Star size={15} fill="black" />
-              <p className="font-bold w-[40%] h-[1rem] animate animate-pulse text-neutral-300 bg-neutral-300">s</p>
+              <p className="animate h-[1rem] w-[40%] animate-pulse bg-neutral-300 font-bold text-neutral-300">
+                s
+              </p>
             </div>
           </div>
         </div>
@@ -25,10 +32,14 @@ const Loading = () => {
         <div className="h-[15rem] w-[20rem] animate-pulse rounded-2xl bg-neutral-300"></div>
         <div className="flex w-full flex-col px-0.5 py-[2%]">
           <div className="flex items-center justify-between">
-            <p className="font-bold w-[40%] h-[1rem] animate-pulse text-neutral-300 bg-neutral-300">s</p>
+            <p className="h-[1rem] w-[40%] animate-pulse bg-neutral-300 font-bold text-neutral-300">
+              s
+            </p>
             <div className="flex items-center gap-1">
               <Star size={15} fill="black" />
-              <p className="font-bold w-[40%] h-[1rem] animate-pulse text-neutral-300 bg-neutral-300">s</p>
+              <p className="h-[1rem] w-[40%] animate-pulse bg-neutral-300 font-bold text-neutral-300">
+                s
+              </p>
             </div>
           </div>
         </div>

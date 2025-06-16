@@ -60,10 +60,10 @@ const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
           )}
         </div>
         <Dialog>
-          <DialogTrigger>
+          <DialogTrigger className="cursor-pointer">
             <Button
               type="button"
-              className="relative bottom-[3rem] flex w-[10rem] items-center justify-between gap-2 p-[2%]"
+              className="relative bottom-[3rem] flex w-[10rem] cursor-pointer items-center justify-between gap-2 p-[2%]"
             >
               <Grip />
               <p>Show all photos</p>
@@ -80,8 +80,8 @@ const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
                   )),
                 )}
               </CarouselContent>
-              <CarouselPrevious />
-              <CarouselNext />
+              <CarouselPrevious className="cursor-pointer"/>
+              <CarouselNext className="cursor-pointer"/>
             </Carousel>
           </DialogContent>
         </Dialog>

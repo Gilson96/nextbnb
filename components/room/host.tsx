@@ -17,7 +17,7 @@ const Host = async ({ hostId, roomRating, roomId }: HostProps) => {
 
   return (
     <div className="my-[5%] flex w-full flex-col items-center gap-1 p-[2%] md:flex md:flex-row md:items-start md:justify-between md:my-0">
-      <div className="flex flex-col md:w-full lg:w-[30%]">
+      <div className="flex flex-col w-full lg:w-[30%]">
         <p className="mb-[2%] text-xl font-bold">Meet your host</p>
         <div className="flex h-[12rem] items-center justify-between rounded-xl border p-[4%] shadow">
           <div className="flex flex-col items-center justify-center">

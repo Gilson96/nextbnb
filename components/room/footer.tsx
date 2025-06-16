@@ -28,7 +28,7 @@ const Footer = ({ room, host, roomImage, roomPrice }: FooterProps) => {
     <>
       <div className="fixed bottom-0 z-50 flex h-[7rem] w-full items-center justify-between border-t-2 bg-white px-[7%] py-[3%] md:hidden">
         <div className="flex gap-0.5 underline">
-          <p className="font-bold">£{price}</p>
+          <p className="font-bold">£{price === 0 ? roomPrice : price}</p>
           <p>/night</p>
         </div>
         <Link
@@ -37,7 +37,7 @@ const Footer = ({ room, host, roomImage, roomPrice }: FooterProps) => {
           }
           href={"/checkout"}
         >
-          <button className="h-[3rem] w-[8rem] rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow">
+          <button className="h-[3rem] w-[8rem] cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow">
             Reserve
           </button>
         </Link>
@@ -45,8 +45,9 @@ const Footer = ({ room, host, roomImage, roomPrice }: FooterProps) => {
     </>
   );
 };
+export default Footer;
 
-export const stickyFooter = ({
+export const StickyFooter = ({
   room,
   host,
   roomImage,
@@ -64,37 +65,32 @@ export const stickyFooter = ({
         : bookingDates.startDate.getDate()!),
   );
   return (
-    <div className="h-full max-md:hidden">
-      <div className="sticky top-4 left-[20rem] flex h-[15rem] w-[22rem] flex-col items-start justify-between rounded-2xl border bg-white p-[2%] text-xl shadow">
-        <div className="flex w-full flex-col gap-2">
-          <div className="flex gap-0.5 text-2xl underline">
-            <p className="font-bold">£{price === 0 ? roomPrice : price}</p>
-            <p>/night</p>
-          </div>
-
-          <div className="flex w-full justify-between">
-            <div className="flex gap-1">
-              <p>£{roomPrice}</p>
-              <p>x</p>
-              <p>{daysQuantity === 0 ? 1 : daysQuantity} nights</p>
-            </div>
-            <p>£{price === 0 ? roomPrice.toFixed(2) : price.toFixed(2)}</p>
-          </div>
+    <div className="flex h-[15rem] w-[20rem] flex-col items-start justify-between rounded-2xl border bg-white p-[3%] text-xl shadow">
+      <div className="flex w-full flex-col gap-4">
+        <div className="flex gap-0.5 text-2xl underline">
+          <p className="font-bold">£{price === 0 ? roomPrice : price}</p>
+          <p>/night</p>
         </div>
-        <Link
-          onClick={() =>
-            addToCart({ totalPrice: price, room, host, image: roomImage })
-          }
-          href={"/checkout"}
-          className="w-full"
-        >
-          <Button className="h-[3rem] w-full rounded-full bg-linear-to-r from-cyan-500 to-blue-500 text-xl font-bold text-white shadow">
-            Reserve
-          </Button>
-        </Link>
+        <div className="flex w-full justify-between">
+          <div className="flex gap-1">
+            <p>£{roomPrice}</p>
+            <p>x</p>
+            <p>{daysQuantity === 0 ? 1 : daysQuantity} nights</p>
+          </div>
+          <p>£{price === 0 ? roomPrice.toFixed(2) : price.toFixed(2)}</p>
+        </div>
       </div>
+      <Link
+        onClick={() =>
+          addToCart({ totalPrice: price, room, host, image: roomImage })
+        }
+        href={"/checkout"}
+        className="w-full"
+      >
+        <Button className="h-[3rem] w-full cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 text-xl font-bold text-white shadow">
+          Reserve
+        </Button>
+      </Link>
     </div>
   );
 };
-
-export default Footer;

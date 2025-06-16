@@ -3,7 +3,7 @@ import PaymentMethod from "@/components/checkout/paymentMethod";
 import RequestBook from "@/components/checkout/requestBook";
 import { Button } from "@/components/ui/button";
 import { useStore } from "@/store";
-import { CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -30,26 +30,50 @@ const page = () => {
               router.back();
               clearCart();
             }}
-            className="place-self-start rounded-full bg-neutral-300 px-[7%] py-[6%] text-base text-black"
+            className="cursor-pointer place-self-start rounded-full bg-neutral-300 text-base text-black hover:bg-neutral-400"
           >
-            Exit
+            <p className="lg:hidden">Exit</p>
+            <i className="max-lg:hidden">
+              {" "}
+              <ArrowLeft />
+            </i>
           </Button>
-          {cart.map((c, index) => (
-            <>
-              <RequestBook
-                hostName={c.host.hostName}
-                roomDescription={c.room.roomDescription}
-                roomRating={Number(c.room.roomRating)}
-                roomImage={c.image}
-              />
-              <PaymentMethod
-                hostName={c.host.hostName}
-                totalPrice={c.totalPrice}
-                roomPrice={c.room.roomPrice}
-                setShowSuccessModal={setShowSuccessModal}
-              />
-            </>
-          ))}
+          <div className="lg:hidden">
+            {cart.map((c, index) => (
+              <>
+                <RequestBook
+                  hostName={c.host.hostName}
+                  roomDescription={c.room.roomDescription}
+                  roomRating={Number(c.room.roomRating)}
+                  roomImage={c.image}
+                />
+                <PaymentMethod
+                  hostName={c.host.hostName}
+                  totalPrice={c.totalPrice}
+                  roomPrice={c.room.roomPrice}
+                  setShowSuccessModal={setShowSuccessModal}
+                />
+              </>
+            ))}
+          </div>
+          <div className="flex flex-col max-lg:hidden">
+            {cart.map((c, index) => (
+              <div className="flex items-center justify-between">
+                <PaymentMethod
+                  hostName={c.host.hostName}
+                  totalPrice={c.totalPrice}
+                  roomPrice={c.room.roomPrice}
+                  setShowSuccessModal={setShowSuccessModal}
+                />
+                <RequestBook
+                  hostName={c.host.hostName}
+                  roomDescription={c.room.roomDescription}
+                  roomRating={Number(c.room.roomRating)}
+                  roomImage={c.image}
+                />
+              </div>
+            ))}
+          </div>
         </>
       )}
     </main>

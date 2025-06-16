@@ -28,7 +28,7 @@ const RequestBook = ({
   const formatDate = `${startDate}-${endDate} ${month} ${year}`;
 
   return (
-    <section className="flex w-full flex-col items-center ">
+    <section className="flex w-full flex-col items-center lg:mb-[6%]">
       <p className="my-[3%] w-full place-self-start text-2xl font-bold">
         Request to book
       </p>
@@ -58,7 +58,7 @@ const RequestBook = ({
           </div>
           <Button
             onClick={() => router.back()}
-            className="rounded-2xl bg-neutral-300 px-[4%] py-[6%] text-base text-black"
+            className="rounded-2xl bg-neutral-300 px-[4%] py-[6%] text-base text-black hover:bg-neutral-400 cursor-pointer"
           >
             Change
           </Button>

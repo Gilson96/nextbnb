@@ -77,7 +77,7 @@ export default function CheckoutForm({
       <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
       <Button
         type="submit"
-        className="w-full rounded-2xl border py-[7%] text-base"
+        className="w-full rounded-2xl border py-[7%] text-base lg:py-[5%] cursor-pointer"
       >
         Request to book
       </Button>

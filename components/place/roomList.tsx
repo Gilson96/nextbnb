@@ -23,7 +23,6 @@ const RoomList = async ({
   hostingYears,
 }: RooomListProps) => {
   const gallery = await getRoomGallery()
-
   const randomNumber = Math.floor(Math.random() * 3);
   const findRoomImage = gallery.find(image => image.roomId === id)?.imageUrl.at(randomNumber)
   

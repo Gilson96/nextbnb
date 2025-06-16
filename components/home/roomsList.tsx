@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { FaRegHeart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
 
 type RoomsListProps = {
-  placeName: string;
+  roomDescription: string;
   roomId: string;
   roomPrice: number;
   roomRating: number;
@@ -11,7 +10,7 @@ type RoomsListProps = {
 };
 
 const RoomsList = ({
-  placeName,
+  roomDescription,
   roomId,
   roomImage,
   roomPrice,
@@ -22,16 +21,16 @@ const RoomsList = ({
       <div>
         <div
           style={{ backgroundImage: `url(${roomImage})` }}
-          className="flex h-[10rem] w-[10rem] justify-end rounded-2xl bg-neutral-400 bg-cover bg-center bg-no-repeat p-[6%]"
+          className=" flex md:h-[13rem] md:w-[13rem] h-[10rem] w-[10rem] justify-end rounded-2xl bg-neutral-400 bg-cover bg-center bg-no-repeat p-[6%]"
         >
           {" "}
         </div>
         <div className="text-sm">
-          <p className="font-medium">Room in {placeName}</p>
+          <p className="font-bold mt-1">{roomDescription}</p>
           <div className="flex items-center gap-1 text-neutral-500">
             <p>£{roomPrice}/night</p>
             <span className="text-neutral-500">&#183;</span>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5">
               <FaStar />
               <p>{roomRating}</p>
             </div>

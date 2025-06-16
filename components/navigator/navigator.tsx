@@ -1,5 +1,5 @@
 "use client";
-import { AlignJustify, ShoppingCart, X } from "lucide-react";
+import { X } from "lucide-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Link from "next/link";
 import { useState } from "react";
@@ -13,22 +13,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import HeaderDropdown from "./headerDropdown";
-import HeaderSearch from "./headerSearch";
 import { useStore } from "@/store";
+import Account from "./account";
+import Search from "./search";
+import Modal from "./modal";
 
-type HeaderProps = {
+type NavigatorProps = {
   places: PlacesType[];
   rooms: RoomsType[];
 };
 
-export default function Header({ places, rooms }: HeaderProps) {
+export default function Navigator({ places, rooms }: NavigatorProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const [openInput, setOpenInput] = useState<boolean>(false);
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-  const cart = useStore((state) => state.cart)
+  const cart = useStore((state) => state.cart);
   // adds 'type' property 'as const'
   // to typescript understands which one is the one be call
   // in order to access each array's property
@@ -48,13 +49,13 @@ export default function Header({ places, rooms }: HeaderProps) {
 
   return (
     <div className="flex h-[5rem] w-full items-center justify-between border-b p-[2%] shadow">
-      <Link href={"/"} className="flex items-start text-xl">
+      <Link href={"/"} className="flex items-start text-xl max-[425px]:hidden">
         <p className="font-bold">Next</p>
         <p className="font-bold text-cyan-500">bnb</p>
       </Link>
-
+      <p className="min-[425px]:hidden"></p>
       <AlertDialog open={openInput} onOpenChange={setOpenInput}>
-        <AlertDialogTrigger className="flex h-[3rem] items-center justify-center gap-2 rounded-full border px-[10%] py-[2%] shadow">
+        <AlertDialogTrigger className="flex h-[3rem] cursor-pointer items-center justify-center gap-2 rounded-full border px-[10%] py-[2%] shadow">
           <FaMagnifyingGlass />
           <p>Start your search</p>
         </AlertDialogTrigger>
@@ -68,19 +69,19 @@ export default function Header({ places, rooms }: HeaderProps) {
                 placeholder="rooms, locations..."
                 className="flex h-[3rem] w-full items-center justify-center gap-2 rounded-full border p-[3%] italic shadow"
               />
-              <AlertDialogCancel className="border-0 shadow-none">
+              <AlertDialogCancel className="cursor-pointer border-0 shadow-none">
                 <X />
               </AlertDialogCancel>
             </AlertDialogTitle>
             <AlertDialogDescription className="my-[2%] flex flex-col items-center justify-center">
               {inputValue.length === 0 ? (
-                <HeaderDropdown
+                <Modal
                   setOpenInput={setOpenInput}
                   places={places}
                   rooms={rooms}
                 />
               ) : (
-                <HeaderSearch
+                <Search
                   searchPlacesOrRooms={searchPlacesOrRooms}
                   setOpenInput={setOpenInput}
                 />
@@ -89,7 +90,7 @@ export default function Header({ places, rooms }: HeaderProps) {
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
-      <div></div>
+      <Account />
     </div>
   );
 }

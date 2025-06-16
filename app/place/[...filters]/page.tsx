@@ -1,25 +1,20 @@
-import FiltersSetup from "@/components/home/filtersSetup";
-import Header from "@/components/home/header";
+import Filters from "@/components/navigator/filters";
+import Navigator from "@/components/navigator/navigator";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
 type PageProps = {
-  params: {
-    location: string;
-    type: string;
-    price: string;
-  };
+  params: { filters: string[] };
 };
 
 const Page = async ({ params }: PageProps) => {
-  const [location] = await params.location;
-  const [type] = await params.type;
-  const [price] = await params.price;
+  const [location, type, price] = params.filters;
 
   const rooms = await getRooms();
   const hosts = await getHosts();
   const places = await getPlaces();
 
+  console.log(location);
   const showRoomsByFilters = () => {
     //clone to avoid mutating
     let filteredRooms = [...rooms];
@@ -55,13 +50,14 @@ const Page = async ({ params }: PageProps) => {
     return filteredRooms;
   };
 
+  console.log(showRoomsByFilters());
   return (
     <main className="flex w-full flex-col items-center justify-center">
-      <Header places={places} rooms={rooms} />
-      <i className="flex w-full justify-end pr-[5%] pb-[7%]">
-        <FiltersSetup places={places} />
+      <Navigator places={places} rooms={rooms} />
+      <i className="md:hidden flex w-full justify-end max-md:py-[3%] max-md:pr-[4%]">
+        <Filters places={places} />
       </i>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 md:grid md:grid-cols-2 md:mt-[5%] md:gap-[5rem] lg:flex lg lg:mt-0 lg:flex-row lg:p-[2%] lg:flex-wrap">
         {showRoomsByFilters().map((room, index) => (
           <RoomList
             key={index}

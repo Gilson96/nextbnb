@@ -13,10 +13,10 @@ import {
   PlacesType,
   RoomsType,
 } from "@/lib/actions/place.actions";
-import Footer from "@/components/room/footer";
+import Footer, { StickyFooter } from "@/components/room/footer";
 import Gallery from "@/components/room/gallery";
-import Header from "@/components/home/header";
 import { RoomDetails } from "@/components/room/details";
+import Navigator from "@/components/navigator/navigator";
 
 const Room = async (props: { params: Promise<{ id: string }> }) => {
   const { id } = await props.params;
@@ -39,23 +39,36 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
   );
 
   return (
-    <main className="flex w-full flex-col">
-      <Header places={places} rooms={rooms} />
+    <main className="relative flex h-full w-full flex-col">
+      <Navigator places={places} rooms={rooms} />
       <Gallery findRoomImage={findRoomImage} />
+
       <div className="flex w-full flex-col items-start justify-start max-md:rounded-t-2xl max-md:border-t max-md:bg-white max-md:p-[3%] max-md:pb-[7rem]">
-        <RoomDetails
-          hostName={findHost?.hostName!}
-          hostingYears={findHost?.hostingYears!}
-          roomDescription={findRoom?.roomDescription!}
-          roomType={findRoom?.roomType!}
-          roomAbout={findRoom?.roomAbout!}
-        />
-        <Amenities roomId={findRoom?.id!} />
-        <BookingCalendar
-          roomPrice={findRoom?.roomPrice!}
-          placeName={placeName!}
-        />
-        <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
+        <div className="md:relative md:flex md:justify-between md:px-[2%]">
+          <div className="">
+          <RoomDetails
+            hostName={findHost?.hostName!}
+            hostingYears={findHost?.hostingYears!}
+            roomDescription={findRoom?.roomDescription!}
+            roomType={findRoom?.roomType!}
+            roomAbout={findRoom?.roomAbout!}
+          />
+          <Amenities roomId={findRoom?.id!} />
+          <BookingCalendar
+            roomPrice={findRoom?.roomPrice!}
+            placeName={placeName!}
+          />
+          </div>
+          <div className="sticky top-[1rem] max-md:hidden self-start">
+            <StickyFooter
+              room={findRoom!}
+              host={findHost!}
+              roomImage={findRoomImage[0].imageUrl[0]}
+              roomPrice={findRoom?.roomPrice!}
+            />
+          </div>
+        </div>
+          <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
         <Maps findRoom={castRoomCoor} placeName={placeName!} />
         <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
         <Reviews
