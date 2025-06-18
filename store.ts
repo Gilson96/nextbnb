@@ -2,12 +2,14 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { HostsTypes, RoomsType } from "./lib/actions/place.actions";
 import axios from "axios";
+import { Session } from "next-auth";
 
 export type CartItem = {
   room: RoomsType;
   host: HostsTypes;
   totalPrice: number;
   image: string;
+  session: Session | null
 };
 export type BookingDates = {
   startDate: Date | undefined;

@@ -74,7 +74,7 @@ model RoomGallery {
 
 model Booking {
   id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId    String   @db.Uuid
+  userId    String   
   roomId    String   @db.Uuid
   startDate DateTime
   endDate   DateTime
@@ -88,7 +88,7 @@ model Booking {
 
 model Wishlist {
   id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String @db.Uuid
+  userId String 
   roomId String @db.Uuid
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

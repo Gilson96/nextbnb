@@ -3,15 +3,18 @@ import { HostsTypes, RoomsType } from "@/lib/actions/place.actions";
 import { useStore } from "@/store";
 import Link from "next/link";
 import { Button } from "../ui/button";
+import { Session } from "next-auth";
+import { toast } from "sonner";
 
-type FooterProps = {
+export type FooterProps = {
   room: RoomsType;
   host: HostsTypes;
   roomImage: string;
   roomPrice: number;
+  session: Session | null;
 };
 
-const Footer = ({ room, host, roomImage, roomPrice }: FooterProps) => {
+const Footer = ({ room, host, roomImage, roomPrice, session }: FooterProps) => {
   const price = useStore((state) => state.price);
   const addToCart = useStore((state) => state.addToCart);
   const bookingDates = useStore((state) => state.bookingDates);
@@ -23,6 +26,13 @@ const Footer = ({ room, host, roomImage, roomPrice }: FooterProps) => {
         ? roomPrice
         : bookingDates.startDate.getDate()!),
   );
+
+  const handleInvalidReservation = () => {
+    toast.error("Please select valid booking dates", {
+      position: "top-center",
+    });
+  };
+
 
   return (
     <>
@@ -31,66 +41,32 @@ const Footer = ({ room, host, roomImage, roomPrice }: FooterProps) => {
           <p className="font-bold">£{price === 0 ? roomPrice : price}</p>
           <p>/night</p>
         </div>
-        <Link
-          onClick={() =>
-            addToCart({ totalPrice: price, room, host, image: roomImage })
-          }
-          href={"/checkout"}
-        >
-          <button className="h-[3rem] w-[8rem] cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow">
+        {daysQuantity <= 0 ? (
+          <Button
+            onClick={handleInvalidReservation}
+            className="h-[3rem] w-[8rem] cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow"
+          >
             Reserve
-          </button>
-        </Link>
+          </Button>
+        ) : (
+          <Link
+            onClick={() =>
+              addToCart({
+                totalPrice: price,
+                room,
+                host,
+                image: roomImage,
+                session,
+              })
+            }
+            href={"/checkout"}
+            className="h-[3rem] w-[8rem] cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow"
+          >
+            Reserve
+          </Link>
+        )}
       </div>
     </>
   );
 };
 export default Footer;
-
-export const StickyFooter = ({
-  room,
-  host,
-  roomImage,
-  roomPrice,
-}: FooterProps) => {
-  const price = useStore((state) => state.price);
-  const addToCart = useStore((state) => state.addToCart);
-  const bookingDates = useStore((state) => state.bookingDates);
-  const daysQuantity = Math.abs(
-    (bookingDates.endDate === undefined
-      ? roomPrice
-      : bookingDates.endDate.getDate()!) -
-      (bookingDates.startDate === undefined
-        ? roomPrice
-        : bookingDates.startDate.getDate()!),
-  );
-  return (
-    <div className="flex h-[15rem] w-[20rem] flex-col items-start justify-between rounded-2xl border bg-white p-[3%] text-xl shadow">
-      <div className="flex w-full flex-col gap-4">
-        <div className="flex gap-0.5 text-2xl underline">
-          <p className="font-bold">£{price === 0 ? roomPrice : price}</p>
-          <p>/night</p>
-        </div>
-        <div className="flex w-full justify-between">
-          <div className="flex gap-1">
-            <p>£{roomPrice}</p>
-            <p>x</p>
-            <p>{daysQuantity === 0 ? 1 : daysQuantity} nights</p>
-          </div>
-          <p>£{price === 0 ? roomPrice.toFixed(2) : price.toFixed(2)}</p>
-        </div>
-      </div>
-      <Link
-        onClick={() =>
-          addToCart({ totalPrice: price, room, host, image: roomImage })
-        }
-        href={"/checkout"}
-        className="w-full"
-      >
-        <Button className="h-[3rem] w-full cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 text-xl font-bold text-white shadow">
-          Reserve
-        </Button>
-      </Link>
-    </div>
-  );
-};

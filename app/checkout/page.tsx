@@ -12,7 +12,6 @@ const page = () => {
   const router = useRouter();
   const clearCart = useStore((state) => state.clearCart);
   const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
-
   return (
     <main className="flex w-full flex-col items-center justify-start p-[3%] text-base">
       {showSuccessModal ? (
@@ -52,6 +51,8 @@ const page = () => {
                   totalPrice={c.totalPrice}
                   roomPrice={c.room.roomPrice}
                   setShowSuccessModal={setShowSuccessModal}
+                  roomId={c.room.id}
+                  session={c.session}
                 />
               </>
             ))}
@@ -64,6 +65,8 @@ const page = () => {
                   totalPrice={c.totalPrice}
                   roomPrice={c.room.roomPrice}
                   setShowSuccessModal={setShowSuccessModal}
+                  roomId={c.room.id}
+                  session={c.session}
                 />
                 <RequestBook
                   hostName={c.host.hostName}

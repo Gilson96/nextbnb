@@ -8,16 +8,47 @@ import {
   CarouselPrevious,
 } from "../ui/carousel";
 import Link from "next/link";
-import { ArrowLeft, Grip } from "lucide-react";
+import { ArrowLeft, Grip, Heart } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
+import { Session } from "next-auth";
+import { toast } from "sonner";
+import { addToWishlist } from "@/lib/actions/users.actions";
+import { useState } from "react";
 
 type RoomGalleryProps = {
   findRoomImage?: GalleryTypes[];
+  session: Session | null;
+  roomId: string;
 };
 
-const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
+const RoomGallery = ({ findRoomImage, session, roomId }: RoomGalleryProps) => {
+  const [wishlisted, setWishlisted] = useState(false);
+
+  console.log(session?.user.wishlist)
+  // const handleToggleWishlist = async () => {
+  //   if (!session) {
+  //     toast("Please sign in to manage your wishlist.");
+  //     return;
+  //   }
+
+  //   try {
+  //     if (wishlisted) {
+  //       await removeToWishlist(roomId); // Assuming roomId is sufficient to identify wishlist item
+  //       setWishlisted(false);
+  //       toast("Removed from wishlist");
+  //     } else {
+  //       await addToWishlist({ userId: session.user.id, roomId });
+  //       setWishlisted(true);
+  //       toast("Added to wishlist");
+  //     }
+  //   } catch (error) {
+  //     console.error("Wishlist update failed:", error);
+  //     toast("Failed to update wishlist");
+  //   }
+  // };
+
   return (
     <>
       <div className="md:hidden">
@@ -25,7 +56,7 @@ const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
           <CarouselContent className="w-full">
             {findRoomImage?.map((image, index) =>
               image.imageUrl.map((img) => (
-                <CarouselItem className="w-full">
+                <CarouselItem key={index} className="w-full">
                   <div
                     style={{
                       backgroundImage: `url("${img}")`,
@@ -38,6 +69,16 @@ const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
                     >
                       <ArrowLeft size={20} />
                     </Link>
+                    {/* <i
+                      className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow"
+                      onClick={() => handleToggleWishlist}
+                    >
+                      {wishlisted ? (
+                        <Heart size={20} fill="black" />
+                      ) : (
+                        <Heart size={20} />
+                      )}
+                    </i> */}
                   </div>
                 </CarouselItem>
               )),
@@ -80,8 +121,8 @@ const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
                   )),
                 )}
               </CarouselContent>
-              <CarouselPrevious className="cursor-pointer"/>
-              <CarouselNext className="cursor-pointer"/>
+              <CarouselPrevious className="cursor-pointer" />
+              <CarouselNext className="cursor-pointer" />
             </Carousel>
           </DialogContent>
         </Dialog>
@@ -91,3 +132,6 @@ const RoomGallery = ({ findRoomImage }: RoomGalleryProps) => {
 };
 
 export default RoomGallery;
+function removeToWishlist(roomId: string) {
+  throw new Error("Function not implemented.");
+}

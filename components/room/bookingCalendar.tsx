@@ -12,7 +12,14 @@ type BookingCalendarProps = {
 const BookingCalendar = ({ placeName, roomPrice }: BookingCalendarProps) => {
   const bookingDates = useStore((state) => state.bookingDates);
   const setBookingPrice = useStore((state) => state.setBookingPrice);
-
+  const daysQuantity = Math.abs(
+    (bookingDates.endDate === undefined
+      ? roomPrice
+      : bookingDates.endDate.getDate()!) -
+      (bookingDates.startDate === undefined
+        ? roomPrice
+        : bookingDates.startDate.getDate()!),
+  );
   const onDateChange = (dateRange: { from?: Date; to?: Date }) => {
     setBookingPrice(
       { startDate: dateRange.from, endDate: dateRange.to },
@@ -20,10 +27,15 @@ const BookingCalendar = ({ placeName, roomPrice }: BookingCalendarProps) => {
     );
   };
 
+  console.log(bookingDates.endDate);
   return (
-    <div className="my-[5%] flex w-full flex-col gap-1 md:p-[2%] md:my-0">
+    <div className="my-[5%] flex w-full flex-col gap-1 md:my-0 md:p-[2%]">
       <div>
-        <p className="text-xl font-bold">2 nights in {placeName}</p>
+        <p className="text-xl font-bold">
+          {daysQuantity === 0
+            ? "Pick a date"
+            : `${daysQuantity} nights in ${placeName}`}{" "}
+        </p>
         <p className="text-neutral-500">
           {bookingDates?.startDate?.toLocaleDateString() || "pick a date"} -{" "}
           {bookingDates?.endDate?.toLocaleDateString() || "pick a date"}
@@ -34,7 +46,7 @@ const BookingCalendar = ({ placeName, roomPrice }: BookingCalendarProps) => {
         mode="range"
         selected={{ from: bookingDates.startDate, to: bookingDates.endDate }}
         onSelect={onDateChange}
-        className="my-[5%] flex w-full md:w-[23rem] items-center justify-center rounded-lg border"
+        className="my-[5%] flex w-full items-center justify-center rounded-lg border md:w-[23rem]"
       />
     </div>
   );

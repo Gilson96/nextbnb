@@ -4,24 +4,32 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
-import { Alert, AlertTitle } from "@/components/ui/alert";
-import { AlertCircleIcon, CheckCircle } from "lucide-react";
-import { useStore } from "@/store";
+import { BookingDates, useStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "../ui/button";
+import { createBooking } from "@/lib/actions/users.actions";
+import { Session } from "next-auth";
+import { toast } from "sonner";
 
 type CheckoutFormProps = {
+  session: Session | null;
   roomPrice: number;
   daysQuantity: number;
   totalPrice: number;
   setShowSuccessModal: Dispatch<SetStateAction<boolean>>;
+  roomId: string;
+  bookingsDays: BookingDates;
 };
 
 export default function CheckoutForm({
   roomPrice,
   daysQuantity,
   totalPrice,
+  session,
+  roomId,
+  bookingsDays,
+  hostName,
   setShowSuccessModal,
 }: CheckoutFormProps) {
   const stripe = useStripe();
@@ -29,7 +37,8 @@ export default function CheckoutForm({
   const clearCart = useStore((state) => state.clearCart);
   const router = useRouter();
 
-  // Fetch Payment Intent when component mounts
+  const [paymentError, setPaymentError] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
@@ -41,24 +50,34 @@ export default function CheckoutForm({
 
     if (error) {
       console.error(error.message);
-      <Alert variant="destructive">
-        <AlertCircleIcon />
-        <AlertTitle>Unable to process your payment.</AlertTitle>
-      </Alert>;
+      toast(error.message);
+      return;
     }
 
     if (paymentIntent && paymentIntent.status === "succeeded") {
-      setShowSuccessModal(true);
-      clearCart();
-      // Redirect after a delay
-      setTimeout(() => {
-        router.push("/");
-      }, 4000); // 3 seconds delay
+      try {
+        await createBooking({
+          userId: session?.user.id!,
+          roomId,
+          startDate: bookingsDays?.startDate?.toISOString()!,
+          endDate: bookingsDays?.endDate?.toISOString()!,
+        });
+
+        setShowSuccessModal(true);
+        clearCart();
+
+        setTimeout(() => {
+          router.push("/");
+        }, 3000);
+      } catch (error) {
+        console.error("Booking failed:", error);
+        setPaymentError("Booking failed. Please contact support.");
+      }
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} id="payement-form">
+    <form onSubmit={handleSubmit} id="payment-form">
       <PaymentElement id="payment-element" />
       <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
       <div className="my-[5%] flex flex-col gap-2">
@@ -67,17 +86,18 @@ export default function CheckoutForm({
           <p>
             £{roomPrice.toFixed(2)} x {daysQuantity} nights
           </p>
-          <p>£{totalPrice.toFixed(2)}</p>{" "}
+          <p>£{totalPrice.toFixed(2)}</p>
         </div>
         <div className="flex w-full items-center justify-between">
           <p className="font-semibold">Total Price</p>
-          <p className="font-bold">£{totalPrice.toFixed(2)}</p>{" "}
+          <p className="font-bold">£{totalPrice.toFixed(2)}</p>
         </div>
       </div>
       <hr className="my-[2%] h-[1px] w-full bg-neutral-300" />
       <Button
         type="submit"
-        className="w-full rounded-2xl border py-[7%] text-base lg:py-[5%] cursor-pointer"
+        className="w-full cursor-pointer rounded-2xl border py-[7%] text-base lg:py-[5%]"
+        disabled={!stripe || !elements}
       >
         Request to book
       </Button>

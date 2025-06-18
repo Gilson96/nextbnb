@@ -13,12 +13,13 @@ import {
   PlacesType,
   RoomsType,
 } from "@/lib/actions/place.actions";
-import Footer, { StickyFooter } from "@/components/room/footer";
+import Footer from "@/components/room/footer";
 import Gallery from "@/components/room/gallery";
 import { RoomDetails } from "@/components/room/details";
 import Navigator from "@/components/navigator/navigator";
 import { getServerSession, Session } from "next-auth";
 import { authConfig } from "@/auth";
+import { StickyFooter } from "@/components/room/stickyFooter";
 
 const Room = async (props: { params: Promise<{ id: string }> }) => {
   const { id } = await props.params;
@@ -41,12 +42,10 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
     findRoom.roomDescription.length,
   );
 
-  console.log(rooms)
-
   return (
     <main className="relative flex h-full w-full flex-col">
       <Navigator places={places} rooms={rooms} session={session} />
-      <Gallery findRoomImage={findRoomImage} />
+      <Gallery roomId={findRoom?.id!} findRoomImage={findRoomImage} session={session}/>
 
       <div className="flex w-full flex-col items-start justify-start max-md:rounded-t-2xl max-md:border-t max-md:bg-white max-md:p-[3%] max-md:pb-[7rem]">
         <div className="md:relative md:flex md:justify-between md:px-[2%]">
@@ -70,6 +69,7 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
               host={findHost!}
               roomImage={findRoomImage[0].imageUrl[0]}
               roomPrice={findRoom?.roomPrice!}
+              session={session}
             />
           </div>
         </div>
@@ -93,6 +93,7 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
         host={findHost!}
         roomImage={findRoomImage[0].imageUrl[0]}
         roomPrice={findRoom?.roomPrice!}
+        session={session}
       />
     </main>
   );
