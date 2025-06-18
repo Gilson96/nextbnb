@@ -3,10 +3,12 @@ import Navigator from "@/components/navigator/navigator";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
-const Page = async (props: {
-  params: Promise<{ location: string; type: string; price: string }>;
-}) => {
-  const { location, type, price } = await props.params;
+interface PageProps {
+  params: { filters: string[] };
+}
+
+const Page = async ({ params }: PageProps) => {
+  const [location = "all", type = "all", price = "all"] = params.filters;
 
   const rooms = await getRooms();
   const hosts = await getHosts();

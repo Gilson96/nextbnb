@@ -10,6 +10,7 @@ const SignIn = async () => {
     redirect("/");
   }
 
+  console.log(session)
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-2">
       <Form />

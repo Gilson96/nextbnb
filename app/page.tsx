@@ -11,11 +11,14 @@ import {
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Filters from "@/components/navigator/filters";
+import { getServerSession } from "next-auth/next";
+import { authConfig } from "@/auth";
 
 export default async function Home() {
   const rooms: RoomsType[] = await getRooms();
   const places: PlacesType[] = await getPlaces();
   const gallery: GalleryTypes[] = await getRoomGallery();
+  const session = await getServerSession(authConfig);
 
   const findImage = (roomId: string) => {
     return gallery.filter((image) => image.roomId === roomId);
@@ -23,7 +26,7 @@ export default async function Home() {
 
   return (
     <main className="w-full bg-white">
-      <Navigator places={places} rooms={rooms} />
+      <Navigator places={places} rooms={rooms} session={session} />
       <div className="flex w-full items-end justify-end p-[2%] lg:hidden">
         <Filters places={places} />
       </div>

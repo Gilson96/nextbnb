@@ -65,7 +65,7 @@ const Form = () => {
       </div>
       <button
         type="submit"
-        className="rounded bg-cyan-500 px-4 py-2 text-white hover:bg-cyan-600"
+        className="cursor-pointer rounded bg-cyan-500 px-4 py-2 text-white hover:bg-cyan-600"
       >
         Sign In
       </button>

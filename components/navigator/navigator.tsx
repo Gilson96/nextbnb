@@ -13,23 +13,23 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useStore } from "@/store";
 import Account from "./account";
 import Search from "./search";
 import Modal from "./modal";
+import { Session } from "next-auth";
 
 type NavigatorProps = {
-  places: PlacesType[];
-  rooms: RoomsType[];
+  places?: PlacesType[];
+  rooms?: RoomsType[];
+  session?: Session | null;
 };
 
-export default function Navigator({ places, rooms }: NavigatorProps) {
+export default function Navigator({ places, rooms, session }: NavigatorProps) {
   const [inputValue, setInputValue] = useState<string>("");
   const [openInput, setOpenInput] = useState<boolean>(false);
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-  const cart = useStore((state) => state.cart);
   // adds 'type' property 'as const'
   // to typescript understands which one is the one be call
   // in order to access each array's property
@@ -77,8 +77,8 @@ export default function Navigator({ places, rooms }: NavigatorProps) {
               {inputValue.length === 0 ? (
                 <Modal
                   setOpenInput={setOpenInput}
-                  places={places}
-                  rooms={rooms}
+                  places={places!}
+                  rooms={rooms!}
                 />
               ) : (
                 <Search
@@ -90,7 +90,7 @@ export default function Navigator({ places, rooms }: NavigatorProps) {
           </AlertDialogHeader>
         </AlertDialogContent>
       </AlertDialog>
-      <Account />
+      <Account session={session!} />
     </div>
   );
 }

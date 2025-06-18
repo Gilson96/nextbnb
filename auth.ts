@@ -5,6 +5,26 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthOptions } from "next-auth";
 
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+
+  interface User {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    password?: string | null;
+    role?: string | null;
+  }
+}
+
 export const authConfig = {
   pages: {
     signIn: "/sign-in",
@@ -66,6 +86,7 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.id = user.id
         token.email = user.email;
         token.name = user.name;
       }
@@ -73,6 +94,7 @@ export const authConfig = {
     },
     async session({ session, token }) {
       if (session?.user) {
+        session.user.id = token.id as string
         session.user.email = token.email;
         session.user.name = token.name;
       }

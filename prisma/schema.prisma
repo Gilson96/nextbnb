@@ -32,7 +32,7 @@ model Room {
   roomRating      Decimal         @default(0) @db.Decimal(4, 2)
   roomLatitude    Decimal         @default(0) @db.Decimal(9, 6)
   roomLongitude   Decimal         @default(0) @db.Decimal(9, 6)
-  roomLocation    String 
+  roomLocation    String
   roomPrice       Int
   roomAbout       String
   hostId          String          @db.Uuid
@@ -40,6 +40,13 @@ model Room {
   roomAmenities   RoomAmenities[]
   roomReviews     RoomReviews[]
   roomGallery     RoomGallery[]
+
+  ownerId String?
+  owner   User?   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+
+  Booking Booking[]
+
+  Wishlist Wishlist[]
 }
 
 model RoomAmenities {
@@ -65,6 +72,31 @@ model RoomGallery {
   room     Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
 
+model Booking {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId    String   @db.Uuid
+  roomId    String   @db.Uuid
+  startDate DateTime
+  endDate   DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Wishlist {
+  id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId String @db.Uuid
+  roomId String @db.Uuid
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
 model User {
   id            String    @id @default(cuid())
   name          String?   @default("NO_NAME")
@@ -78,6 +110,11 @@ model User {
   updatedAt     DateTime  @updatedAt
   account       Account[]
   session       Session[]
+  rooms         Room[]
+
+  Booking Booking[]
+
+  Wishlist Wishlist[]
 }
 
 model Account {

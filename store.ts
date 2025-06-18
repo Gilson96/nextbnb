@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { HostsTypes, RoomsType } from "./lib/actions/place.actions";
+import axios from "axios";
 
 export type CartItem = {
   room: RoomsType;
@@ -15,12 +16,14 @@ export type BookingDates = {
 
 type Store = {
   cart: CartItem[];
-  addToCart: (item: CartItem) => void;
   bookingDates: BookingDates;
-  setBookingDates: (dates: BookingDates) => void;
   price: number;
+  rooms: RoomsType[];
+  addToCart: (item: CartItem) => void;
+  setBookingDates: (dates: BookingDates) => void;
   setBookingPrice: (dates: BookingDates, roomPrice: number) => void;
   clearCart: () => void;
+  addRoom: (newRoom: RoomsType[]) => Promise<void>;
 };
 
 export const useStore = create<Store>()(
@@ -55,7 +58,17 @@ export const useStore = create<Store>()(
           price: newPrice,
         });
       },
-      clearCart: () => set({ cart: [], bookingDates: {startDate: undefined, endDate: undefined}, price: 0 }),
+      clearCart: () =>
+        set({
+          cart: [],
+          bookingDates: { startDate: undefined, endDate: undefined },
+          price: 0,
+        }),
+      rooms: [],
+      addRoom: async (newRoom) => {
+        const response = await axios.post("/api/rooms", newRoom);
+        set((state) => ({ rooms: [...state.rooms, response.data] }));
+      },
     }),
     {
       name: "cart-storage", // LocalStorage key
