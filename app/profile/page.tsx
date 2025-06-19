@@ -1,10 +1,21 @@
 import { authConfig } from "@/auth";
 import Navigator from "@/components/navigator/navigator";
+import Bookings from "@/components/profile/bookings";
 import NewPlace from "@/components/profile/newPlace";
-import { prisma } from "@/db/prisma";
-import { RoomsType } from "@/lib/actions/place.actions";
-import { Decimal } from "@prisma/client/runtime/library";
-import { Heart, MapPinHouse, Plus } from "lucide-react";
+import Wishlists from "@/components/profile/wishlists";
+import {
+  getHosts,
+  getRoomGallery,
+  getRooms,
+  HostsTypes,
+  RoomsType,
+} from "@/lib/actions/place.actions";
+import {
+  BookingTypes,
+  getBookings,
+  getWishlist,
+  WishlistTypes,
+} from "@/lib/actions/users.actions";
 import { getServerSession } from "next-auth/next";
 import { RxAvatar } from "react-icons/rx";
 
@@ -12,23 +23,14 @@ const Profile = async () => {
   const session = await getServerSession(authConfig);
   const admin = session?.user?.name === "Admin";
 
-  let userRooms: RoomsType[] = [];
+  const gallery = await getRoomGallery();
+  const host: HostsTypes[] = await getHosts();
+  const whichlist: WishlistTypes[] = await getWishlist(session?.user.id!);
+  const rooms: RoomsType[] = await getRooms();
+  const bookings: BookingTypes[] = await getBookings(session?.user.id!);
 
-  if (session?.user?.email) {
-    const user = await prisma.user.findUnique({
-      where: { email: session.user.email },
-      include: { rooms: true },
-    });
-
-    userRooms = userRooms = (user?.rooms || []).map((room) => ({
-      ...room,
-      roomRating: (room.roomRating as Decimal).toNumber(), // Convert Decimal to number
-      roomLatitude: (room.roomLatitude as Decimal).toNumber(),
-      roomLongitude: (room.roomLongitude as Decimal).toNumber(),
-      roomLocation: room.roomLocation,
-    }));
-  }
-
+  const userBookings = bookings.filter((booking) => booking.userId === session?.user.id)
+  
   return (
     <>
       <Navigator session={session} />
@@ -42,7 +44,7 @@ const Profile = async () => {
             </div>
             <div className="flex w-[60%] flex-col gap-2 px-[4%]">
               <div className="flex flex-col">
-                <p className="text-xl font-bold">4</p>
+                <p className="text-xl font-bold">{userBookings.length}</p>
                 <p>trips</p>
               </div>
               <hr className="h-[1px] w-full text-neutral-400" />
@@ -59,16 +61,16 @@ const Profile = async () => {
               )}
             </div>
           </div>
-          <div className="max-lg:mt-[2%] grid grid-cols-2 gap-2.5">
-            <div className="flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow">
-              <MapPinHouse size={40} />
-              <p>Past trips</p>
-            </div>
+          <div className="grid grid-cols-2 gap-2.5 max-lg:mt-[2%]">
+            <Bookings hosts={host} bookings={bookings} rooms={rooms} gallery={gallery} />
             {admin && <NewPlace hostId={session.user.id} />}
-            <div className="flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow">
-              <Heart size={40} />
-              <p>Wishlists</p>
-            </div>
+
+            <Wishlists
+              gallery={gallery}
+              host={host}
+              rooms={rooms}
+              wishlist={whichlist}
+            />
           </div>
         </div>
       </section>

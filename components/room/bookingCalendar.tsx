@@ -1,5 +1,4 @@
 "use client";
-import { useState } from "react";
 import "react-day-picker/style.css";
 import { Calendar } from "@/components/ui/calendar";
 import { useStore } from "@/store";
@@ -27,7 +26,6 @@ const BookingCalendar = ({ placeName, roomPrice }: BookingCalendarProps) => {
     );
   };
 
-  console.log(bookingDates.endDate);
   return (
     <div className="my-[5%] flex w-full flex-col gap-1 md:my-0 md:p-[2%]">
       <div>

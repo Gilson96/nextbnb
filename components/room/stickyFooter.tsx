@@ -4,6 +4,8 @@ import { FooterProps } from "./footer";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 import Link from "next/link";
+import { Heart } from "lucide-react";
+import { useWishlist } from "@/hooks/useWishlits";
 
 export const StickyFooter = ({
   room,
@@ -23,6 +25,9 @@ export const StickyFooter = ({
         ? roomPrice
         : bookingDates.startDate.getDate()!),
   );
+  const { isInWishlist, toggleWishlist, loading } = useWishlist(
+    session?.user.id,
+  );
 
   const handleInvalidReservation = () => {
     toast.error("Please select valid booking dates", {
@@ -30,12 +35,11 @@ export const StickyFooter = ({
     });
   };
 
-
   return (
     <div className="flex h-[15rem] w-[20rem] flex-col items-start justify-between rounded-2xl border bg-white p-[3%] text-xl shadow">
       <div className="flex w-full flex-col gap-4">
         <div className="flex gap-0.5 text-2xl underline">
-          <p className="font-bold">£{price === 0 ? roomPrice : price}</p>
+          <p className="font-bold">£{roomPrice}</p>
           <p>/night</p>
         </div>
         <div className="flex w-full justify-between">
@@ -47,6 +51,17 @@ export const StickyFooter = ({
           <p>£{price === 0 ? roomPrice.toFixed(2) : price.toFixed(2)}</p>
         </div>
       </div>
+      <div className="flex items-center gap-2">
+        <button
+          className="cursor-pointer"
+          onClick={() => toggleWishlist(room.id)}
+          disabled={loading}
+        >
+          <Heart fill={isInWishlist(room.id) ? "black" : "none"} />
+        </button>
+        <p>Wishlist</p>
+      </div>
+      <hr className="h-[0.5px] w-full bg-neutral-300" />
       {daysQuantity <= 0 ? (
         <Button
           onClick={handleInvalidReservation}
@@ -66,7 +81,7 @@ export const StickyFooter = ({
             })
           }
           href={"/checkout"}
-          className="h-[3rem] w-[8rem] cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow"
+          className="flex h-[3rem] w-[8rem] cursor-pointer items-center justify-center rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow"
         >
           Reserve
         </Link>

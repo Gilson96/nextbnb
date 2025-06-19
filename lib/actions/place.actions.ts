@@ -43,6 +43,10 @@ export type ReviewesTypes = {
   reviewDate: string;
 };
 
+export type UserTypes = {
+  
+}
+
 export async function getPlaces() {
   const data = await prisma.place.findMany();
   return data;
@@ -72,5 +76,10 @@ export async function getRoomReviews() {
 }
 export async function getRoomGallery() {
   const data = await prisma.roomGallery.findMany();
+  return data;
+}
+
+export async function getUser() {
+  const data = await prisma.session.findMany()
   return data;
 }

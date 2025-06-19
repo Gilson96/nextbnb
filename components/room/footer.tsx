@@ -33,7 +33,6 @@ const Footer = ({ room, host, roomImage, roomPrice, session }: FooterProps) => {
     });
   };
 
-
   return (
     <>
       <div className="fixed bottom-0 z-50 flex h-[7rem] w-full items-center justify-between border-t-2 bg-white px-[7%] py-[3%] md:hidden">
@@ -60,7 +59,7 @@ const Footer = ({ room, host, roomImage, roomPrice, session }: FooterProps) => {
               })
             }
             href={"/checkout"}
-            className="h-[3rem] w-[8rem] cursor-pointer rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow"
+            className="flex h-[3rem] w-[8rem] cursor-pointer items-center justify-center rounded-full bg-linear-to-r from-cyan-500 to-blue-500 font-bold text-white shadow"
           >
             Reserve
           </Link>

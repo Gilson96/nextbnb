@@ -5,6 +5,8 @@ import CheckoutForm from "@/components/checkout/CheckoutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Session } from "next-auth";
+import { createBooking } from "@/lib/actions/users.actions";
+import { toast } from "sonner";
 
 type PaymentMethodProps = {
   hostName: string;
@@ -20,7 +22,6 @@ const stripePromise = loadStripe(
 );
 
 const PaymentMethod = ({
-  hostName,
   roomPrice,
   totalPrice,
   setShowSuccessModal,
@@ -42,11 +43,33 @@ const PaymentMethod = ({
       });
       const data = await res.json();
       setClientSecret(data.clientSecret);
-      console.log(data);
     };
 
     createPaymentIntent();
   }, [totalPrice]);
+
+  const handleSuccessfulPayment = async (paymentData: {
+    paymentAmount: number;
+    paymentMethod: string;
+  }) => {
+    if (!session?.user?.id) return;
+
+    try {
+      await createBooking({
+        userId: session.user.id,
+        roomId,
+        startDate: bookingDays.startDate!,
+        endDate: bookingDays.endDate!,
+        payementAmount: paymentData.paymentAmount,
+        payementMethod: paymentData.paymentMethod,
+      });
+
+      setShowSuccessModal(true);
+    } catch (error) {
+      console.error("Booking creation failed:", error);
+      toast.error("Booking failed", { position: "top-center" });
+    }
+  };
 
   if (!clientSecret) return <p className="my-[2%]">Loading...</p>;
 
@@ -62,9 +85,7 @@ const PaymentMethod = ({
           daysQuantity={daysQuantity}
           totalPrice={totalPrice}
           setShowSuccessModal={setShowSuccessModal}
-          roomId={roomId}
-          session={session}
-          bookingsDays={bookingDays}
+          onSuccessfulPayment={handleSuccessfulPayment}
         />
       </Elements>
     </section>

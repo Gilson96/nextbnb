@@ -9,7 +9,7 @@ export type CartItem = {
   host: HostsTypes;
   totalPrice: number;
   image: string;
-  session: Session | null
+  session: Session | null;
 };
 export type BookingDates = {
   startDate: Date | undefined;

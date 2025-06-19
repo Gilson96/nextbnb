@@ -1,5 +1,5 @@
 "use client";
-import { GalleryTypes } from "@/lib/actions/place.actions";
+import { GalleryTypes, RoomsType } from "@/lib/actions/place.actions";
 import {
   Carousel,
   CarouselContent,
@@ -13,44 +13,32 @@ import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import Image from "next/image";
 import { Session } from "next-auth";
-import { toast } from "sonner";
-import { addToWishlist } from "@/lib/actions/users.actions";
-import { useState } from "react";
+import { useWishlist } from "@/hooks/useWishlits";
 
 type RoomGalleryProps = {
   findRoomImage?: GalleryTypes[];
   session: Session | null;
   roomId: string;
+  room: RoomsType;
+  initialWishlist?: { id: string }[];
+  userId?: string;
 };
 
-const RoomGallery = ({ findRoomImage, session, roomId }: RoomGalleryProps) => {
-  const [wishlisted, setWishlisted] = useState(false);
-
-  console.log(session?.user.wishlist)
-  // const handleToggleWishlist = async () => {
-  //   if (!session) {
-  //     toast("Please sign in to manage your wishlist.");
-  //     return;
-  //   }
-
-  //   try {
-  //     if (wishlisted) {
-  //       await removeToWishlist(roomId); // Assuming roomId is sufficient to identify wishlist item
-  //       setWishlisted(false);
-  //       toast("Removed from wishlist");
-  //     } else {
-  //       await addToWishlist({ userId: session.user.id, roomId });
-  //       setWishlisted(true);
-  //       toast("Added to wishlist");
-  //     }
-  //   } catch (error) {
-  //     console.error("Wishlist update failed:", error);
-  //     toast("Failed to update wishlist");
-  //   }
-  // };
+const RoomGallery = ({
+  findRoomImage,
+  session,
+  roomId,
+  initialWishlist = [],
+  userId = session?.user.id,
+}: RoomGalleryProps) => {
+  const { isInWishlist, toggleWishlist, loading } = useWishlist(
+    userId,
+    initialWishlist,
+  );
 
   return (
     <>
+      {/* mobile */}
       <div className="md:hidden">
         <Carousel>
           <CarouselContent className="w-full">
@@ -69,16 +57,13 @@ const RoomGallery = ({ findRoomImage, session, roomId }: RoomGalleryProps) => {
                     >
                       <ArrowLeft size={20} />
                     </Link>
-                    {/* <i
+                    <button
                       className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow"
-                      onClick={() => handleToggleWishlist}
+                      onClick={() => toggleWishlist(roomId)}
+                      disabled={loading}
                     >
-                      {wishlisted ? (
-                        <Heart size={20} fill="black" />
-                      ) : (
-                        <Heart size={20} />
-                      )}
-                    </i> */}
+                      <Heart fill={isInWishlist(roomId) ? "black" : "none"} />
+                    </button>
                   </div>
                 </CarouselItem>
               )),
@@ -86,6 +71,7 @@ const RoomGallery = ({ findRoomImage, session, roomId }: RoomGalleryProps) => {
           </CarouselContent>
         </Carousel>
       </div>
+      {/* Desktop */}
       <div className="flex w-full flex-col items-end justify-end p-[2%] max-md:hidden">
         <div className="grid h-[30rem] w-full grid-flow-col grid-rows-2 gap-4">
           {findRoomImage?.map((image, index) =>
@@ -132,6 +118,3 @@ const RoomGallery = ({ findRoomImage, session, roomId }: RoomGalleryProps) => {
 };
 
 export default RoomGallery;
-function removeToWishlist(roomId: string) {
-  throw new Error("Function not implemented.");
-}

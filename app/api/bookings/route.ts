@@ -1,43 +1,43 @@
 import { prisma } from "@/db/prisma";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextResponse } from "next/server";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse,
-) {
-  if (req.method === "POST") {
-    const { userId, roomId, startDate, endDate } = req.body;
+// POST: Create a booking
+export async function POST(request: Request) {
+  try {
+    const { userId, roomId, startDate, endDate, paymentAmount, paymentMethod } = await request.json();
 
-    if (!userId || !roomId || !startDate || !endDate) {
-      return res.status(400).json({ error: "Missing required fields" });
+    if (!userId || !roomId || !startDate || !endDate || !paymentAmount || !paymentMethod) {
+      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
-    try {
-      const booking = await prisma.booking.create({
-        data: {
-          userId,
-          roomId,
-          startDate: new Date(startDate),
-          endDate: new Date(endDate),
-        },
-      });
-      return res.status(200).json(booking);
-    } catch (error) {
-      return res.status(500).json({ error: "Failed to create booking" });
-    }
+    const booking = await prisma.booking.create({
+      data: {
+        userId,
+        roomId,
+        startDate: new Date(startDate),
+        endDate: new Date(endDate),
+        payementAmount: paymentAmount, // Your original typo was "payementAmount" in the DB.
+        payementMethod: paymentMethod,
+      },
+    });
+
+    return NextResponse.json(booking, { status: 200 });
+  } catch (error) {
+    console.error("POST error:", error);
+    return NextResponse.json({ error: "Failed to create booking" }, { status: 500 });
   }
+}
 
-  if (req.method === "GET") {
-    try {
-      const bookings = await prisma.booking.findMany({
-        include: { room: true },
-      });
-      return res.status(200).json(bookings);
-    } catch (error) {
-      return res.status(500).json({ error: "Failed to fetch bookings" });
-    }
+// GET: Fetch all bookings
+export async function GET() {
+  try {
+    const bookings = await prisma.booking.findMany({
+      include: { room: true },
+    });
+
+    return NextResponse.json(bookings, { status: 200 });
+  } catch (error) {
+    console.error("GET error:", error);
+    return NextResponse.json({ error: "Failed to fetch bookings" }, { status: 500 });
   }
-
-  res.setHeader("Allow", ["POST", "GET"]);
-  res.status(405).end(`Method ${req.method} Not Allowed`);
 }

@@ -11,8 +11,10 @@ datasource db {
 
 model Place {
   id        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  placeName String
+  placeName String @unique
   hosts     Host[]
+
+  Room Room[]
 }
 
 model Host {
@@ -26,27 +28,30 @@ model Host {
 }
 
 model Room {
-  id              String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id              String  @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   roomDescription String
   roomType        String
-  roomRating      Decimal         @default(0) @db.Decimal(4, 2)
-  roomLatitude    Decimal         @default(0) @db.Decimal(9, 6)
-  roomLongitude   Decimal         @default(0) @db.Decimal(9, 6)
+  roomRating      Decimal @default(0) @db.Decimal(4, 2)
+  roomLatitude    Decimal @default(0) @db.Decimal(9, 6)
+  roomLongitude   Decimal @default(0) @db.Decimal(9, 6)
   roomLocation    String
   roomPrice       Int
   roomAbout       String
-  hostId          String          @db.Uuid
-  host            Host            @relation(fields: [hostId], references: [id], onDelete: Cascade)
-  roomAmenities   RoomAmenities[]
-  roomReviews     RoomReviews[]
-  roomGallery     RoomGallery[]
+
+  placeId String @db.Uuid // <--- Add this line
+  place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
 
   ownerId String?
   owner   User?   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
 
-  Booking Booking[]
-
-  Wishlist Wishlist[]
+  roomAmenities RoomAmenities[]
+  roomReviews   RoomReviews[]
+  roomGallery   RoomGallery[]
+  Booking       Booking[]
+  Wishlist      Wishlist[]
+  
+  hostId        String
+  Host          Host[]
 }
 
 model RoomAmenities {
@@ -73,11 +78,13 @@ model RoomGallery {
 }
 
 model Booking {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId    String   
-  roomId    String   @db.Uuid
-  startDate DateTime
-  endDate   DateTime
+  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId         String
+  roomId         String   @db.Uuid
+  startDate      DateTime
+  endDate        DateTime
+  payementAmount Int
+  payementMethod String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
@@ -88,7 +95,7 @@ model Booking {
 
 model Wishlist {
   id     String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  userId String 
+  userId String
   roomId String @db.Uuid
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)

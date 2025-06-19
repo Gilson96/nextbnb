@@ -4,33 +4,29 @@ import {
   useElements,
   PaymentElement,
 } from "@stripe/react-stripe-js";
-import { BookingDates, useStore } from "@/store";
+import { useStore } from "@/store";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "../ui/button";
-import { createBooking } from "@/lib/actions/users.actions";
-import { Session } from "next-auth";
 import { toast } from "sonner";
 
 type CheckoutFormProps = {
-  session: Session | null;
   roomPrice: number;
   daysQuantity: number;
   totalPrice: number;
   setShowSuccessModal: Dispatch<SetStateAction<boolean>>;
-  roomId: string;
-  bookingsDays: BookingDates;
+  onSuccessfulPayment: (paymentData: {
+    paymentAmount: number;
+    paymentMethod: string;
+  }) => Promise<void>;
 };
 
 export default function CheckoutForm({
   roomPrice,
   daysQuantity,
   totalPrice,
-  session,
-  roomId,
-  bookingsDays,
-  hostName,
   setShowSuccessModal,
+  onSuccessfulPayment,
 }: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
@@ -56,16 +52,12 @@ export default function CheckoutForm({
 
     if (paymentIntent && paymentIntent.status === "succeeded") {
       try {
-        await createBooking({
-          userId: session?.user.id!,
-          roomId,
-          startDate: bookingsDays?.startDate?.toISOString()!,
-          endDate: bookingsDays?.endDate?.toISOString()!,
+        await onSuccessfulPayment({
+          paymentAmount: paymentIntent.amount,
+          paymentMethod: String(paymentIntent.payment_method),
         });
-
         setShowSuccessModal(true);
         clearCart();
-
         setTimeout(() => {
           router.push("/");
         }, 3000);

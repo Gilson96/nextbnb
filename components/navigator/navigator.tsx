@@ -21,7 +21,7 @@ import { Session } from "next-auth";
 type NavigatorProps = {
   places?: PlacesType[];
   rooms?: RoomsType[];
-  session?: Session | null;
+  session?: Session | null | undefined;
 };
 
 export default function Navigator({ places, rooms, session }: NavigatorProps) {

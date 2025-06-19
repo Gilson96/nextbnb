@@ -1,5 +1,4 @@
 import { Button } from "../ui/button";
-import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +7,7 @@ import axios from "axios";
 import z from "zod";
 import { roomSchema } from "@/lib/validators/validators";
 import { Label } from "@/components/ui/label";
+import { FormInput } from "./formInput";
 
 type RoomInput = z.infer<typeof roomSchema>;
 
@@ -17,15 +17,19 @@ const Form = ({ hostId }: { hostId: string }) => {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    control
+    control,
   } = useForm({
     resolver: zodResolver(roomSchema),
-    defaultValues: { hostId, gallery: [] },
+    defaultValues: {
+      hostId,
+      gallery: [],
+    },
   });
+
   const onSubmit = async (data: RoomInput) => {
     try {
-      const response = await axios.post("/api/auth/addRoom", data);
-      toast("Room added succesfully");
+      await axios.post("/api/auth/addRoom", data);
+      toast("Room added successfully");
       reset();
     } catch (error) {
       console.error("Error adding room:", error);
@@ -35,86 +39,96 @@ const Form = ({ hostId }: { hostId: string }) => {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="mt-[3%] h-[15rem] lg:h-[20rem] space-y-4 overflow-hidden overflow-y-auto"
+      className="mt-[3%] h-[15rem] space-y-4 overflow-y-auto lg:h-[20rem]"
     >
-      <Label htmlFor="roomDescription">Room descripton</Label>
-      <Input
-        {...register("roomDescription")}
+      <FormInput
+        label="Room Description"
+        register={register}
+        name="roomDescription"
         placeholder="Single room in Oldham"
+        error={errors.roomDescription}
       />
-      {errors.roomDescription && (
-        <p className="text-red-500">{errors.roomDescription.message}</p>
-      )}
 
-      <Label htmlFor="roomType">Room Type</Label>
-      <Input {...register("roomType")} placeholder="Single room" />
-      {errors.roomType && (
-        <p className="text-red-500">{errors.roomType.message}</p>
-      )}
+      <FormInput
+        label="Room Type"
+        register={register}
+        name="roomType"
+        placeholder="Single room"
+        error={errors.roomType}
+      />
 
-      <Label htmlFor="roomLatitude">Room Latitude</Label>
-      <Input
+      <FormInput
+        label="Room Latitude"
+        register={register}
+        name="roomLatitude"
         type="number"
-        {...register("roomLatitude")}
+        step="any"
         placeholder="53.565423"
+        error={errors.roomLatitude}
       />
-      {errors.roomLatitude && (
-        <p className="text-red-500">{errors.roomLatitude.message}</p>
-      )}
 
-      <Label htmlFor="roomLongitude">Room Longitude</Label>
-      <Input
+      <FormInput
+        label="Room Longitude"
+        register={register}
+        name="roomLongitude"
         type="number"
-        {...register("roomLongitude")}
+        step="any"
         placeholder="-2.191837"
+        error={errors.roomLongitude}
       />
-      {errors.roomLongitude && (
-        <p className="text-red-500">{errors.roomLongitude.message}</p>
-      )}
 
-      <Label htmlFor="roomLocation">Room Location</Label>
-      <Input {...register("roomLocation")} placeholder="Oldham" />
-      {errors.roomLocation && (
-        <p className="text-red-500">{errors.roomLocation.message}</p>
-      )}
-
-      <Label htmlFor="roomPrice">Room Price</Label>
-      <Input type="number" {...register("roomPrice")} placeholder="115" />
-      {errors.roomPrice && (
-        <p className="text-red-500">{errors.roomPrice.message}</p>
-      )}
-
-      <Label htmlFor="roomAbout">Room About</Label>
-      <Textarea
-        {...register("roomAbout")}
-        placeholder="Enjoy a comfortable single room..."
+      <FormInput
+        label="Room Location"
+        register={register}
+        name="roomLocation"
+        placeholder="Oldham"
+        error={errors.roomLocation}
       />
-      {errors.roomAbout && (
-        <p className="text-red-500">{errors.roomAbout.message}</p>
-      )}
 
-      <Label htmlFor="gallery">Room Gallery</Label>
-      <Controller
-        control={control}
-        name="gallery"
-        render={({ field }) => (
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            className="cursor-pointer"
-            onChange={(e) => {
-              const files = e.target.files;
-              if (!files) return;
-              field.onChange(Array.from(files)); // <-- just an array of File
-            }}
-          />
+      <FormInput
+        label="Room Price"
+        register={register}
+        name="roomPrice"
+        type="number"
+        placeholder="115"
+        error={errors.roomPrice}
+      />
+
+      <div>
+        <Label htmlFor="roomAbout">Room About</Label>
+        <Textarea
+          {...register("roomAbout")}
+          placeholder="Enjoy a comfortable single room..."
+        />
+        {errors.roomAbout && (
+          <p className="text-red-500">{errors.roomAbout.message}</p>
         )}
-      />
-       {errors.gallery && (
-        <p className="text-red-500">{errors.gallery.message}</p>
-      )}
+      </div>
 
+      {[0, 1, 2].map((index) => (
+        <div key={index}>
+          <Label htmlFor={`gallery-${index}`}>Room Image {index + 1}</Label>
+          <Controller
+            control={control}
+            name={`gallery.${index}`}
+            render={({ field }) => (
+              <input
+                type="file"
+                accept="image/*"
+                className="cursor-pointer"
+                onChange={(e) => {
+                  if (e.target.files?.[0]) {
+                    field.onChange(e.target.files[0]); // Update specific index
+                  }
+                }}
+              />
+            )}
+          />
+          {errors.gallery?.[index] && (
+            <p className="text-red-500">{errors.gallery[index]?.message}</p>
+          )}
+        </div>
+      ))}
       <Button type="submit" className="cursor-pointer" disabled={isSubmitting}>
         {isSubmitting ? "Submitting..." : "Add Room"}
       </Button>

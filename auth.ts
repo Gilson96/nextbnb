@@ -4,6 +4,7 @@ import { prisma } from "@/db/prisma";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { compareSync } from "bcrypt-ts-edge";
 import type { NextAuthOptions } from "next-auth";
+import { RoomsType } from "./lib/actions/place.actions";
 
 declare module "next-auth" {
   interface Session {
@@ -25,6 +26,25 @@ declare module "next-auth" {
   }
 }
 
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    name?: string | null;
+    email?: string | null;
+    wishlist: RoomsType[];
+    booking: RoomsType[];
+  }
+}
+
+const serializeRoom = (room: any): RoomsType => {
+  return {
+    ...room,
+    roomLatitude: Number(room.roomLatitude),
+    roomLongitude: Number(room.roomLongitude),
+    roomRating: Number(room.roomRating),
+  };
+};
+
 export const authConfig = {
   pages: {
     signIn: "/sign-in",
@@ -42,10 +62,7 @@ export const authConfig = {
         password: { type: "password" },
       },
       async authorize(credentials) {
-        console.log("Credentials received:", credentials);
-
         if (!credentials?.email || !credentials?.password) {
-          console.error("Missing email or password");
           return null;
         }
 
@@ -53,13 +70,7 @@ export const authConfig = {
           where: { email: credentials.email },
         });
 
-        if (!user) {
-          console.error("User not found for email:", credentials.email);
-          return null;
-        }
-
-        if (!user.password) {
-          console.error("User has no password set.");
+        if (!user || !user.password) {
           return null;
         }
 
@@ -69,11 +80,8 @@ export const authConfig = {
         );
 
         if (!isPasswordValid) {
-          console.error("Password does not match.");
           return null;
         }
-
-        console.log("User authenticated successfully:", user.email);
         return {
           id: user.id,
           email: user.email,
@@ -86,19 +94,22 @@ export const authConfig = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id
-        token.email = user.email;
+        token.id = user.id;
         token.name = user.name;
+        token.email = user.email;
       }
+
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) {
-        session.user.id = token.id as string
-        session.user.email = token.email;
-        session.user.name = token.name;
-      }
-      return session;
+      return {
+        ...session,
+        user: {
+          id: token.id,
+          name: token.name,
+          email: token.email,
+        },
+      };
     },
   },
 } satisfies NextAuthOptions;

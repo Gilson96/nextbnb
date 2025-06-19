@@ -71,8 +71,9 @@ Experience ${placeName} like a local.`;
           roomPrice: randomPrice(),
           roomLocation: placeName,
           roomAbout,
-          hostId: host.id,
           ownerId: null,
+          hostId: host.id, 
+          placeId: createdPlace.id, 
         },
       });
 
@@ -102,7 +103,7 @@ Experience ${placeName} like a local.`;
         const description = generateReviewDescription(
           roomType,
           placeName,
-          hostName
+          hostName,
         );
         const reviewDate = randomDateWithinPastYear();
         reviewIndex++;
