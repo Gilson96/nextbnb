@@ -2,6 +2,7 @@ import { authConfig } from "@/auth";
 import Navigator from "@/components/navigator/navigator";
 import Bookings from "@/components/profile/bookings";
 import NewPlace from "@/components/profile/newPlace";
+import OwnHouses from "@/components/profile/ownHouses";
 import Wishlists from "@/components/profile/wishlists";
 import {
   getHosts,
@@ -29,8 +30,12 @@ const Profile = async () => {
   const rooms: RoomsType[] = await getRooms();
   const bookings: BookingTypes[] = await getBookings(session?.user.id!);
 
-  const userBookings = bookings.filter((booking) => booking.userId === session?.user.id)
-  
+  const userBookings = bookings.filter(
+    (booking) => booking.userId === session?.user.id,
+  );
+  const ownHouses = rooms.filter((room) => room.hostId === session?.user.id);
+
+  console.log(ownHouses);
   return (
     <>
       <Navigator session={session} />
@@ -50,7 +55,7 @@ const Profile = async () => {
               <hr className="h-[1px] w-full text-neutral-400" />
               {admin ? (
                 <div className="flex flex-col">
-                  <p className="text-xl font-bold">4</p>
+                  <p className="text-xl font-bold">{ownHouses.length}</p>
                   <p>Own houses</p>
                 </div>
               ) : (
@@ -62,15 +67,26 @@ const Profile = async () => {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2.5 max-lg:mt-[2%]">
-            <Bookings hosts={host} bookings={bookings} rooms={rooms} gallery={gallery} />
+            <Bookings
+              hosts={host}
+              bookings={bookings}
+              rooms={rooms}
+              gallery={gallery}
+            />
             {admin && <NewPlace hostId={session.user.id} />}
-
             <Wishlists
               gallery={gallery}
               host={host}
               rooms={rooms}
               wishlist={whichlist}
             />
+            {admin && (
+              <OwnHouses
+                hostId={session?.user.id!}
+                gallery={gallery}
+                ownHouses={ownHouses}
+              />
+            )}
           </div>
         </div>
       </section>

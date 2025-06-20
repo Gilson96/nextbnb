@@ -3,7 +3,6 @@ import { prisma } from "@/db/prisma";
 import { NextResponse } from "next/server";
 import { authConfig } from "@/auth";
 
-// Create Room
 export async function POST(req: Request) {
   const session = await getServerSession(authConfig);
 
@@ -19,19 +18,21 @@ export async function POST(req: Request) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const body = await req.json();
-  const {
-    roomDescription,
-    roomType,
-    roomLatitude,
-    roomLongitude,
-    roomLocation,
-    roomPrice,
-    roomAbout,
-    placeName,
-  } = body;
-
   try {
+    const body = await req.json();
+
+    const {
+      roomDescription,
+      roomType,
+      roomLatitude,
+      roomLongitude,
+      roomLocation,
+      roomPrice,
+      roomAbout,
+      gallery,
+      placeName,
+    } = body;
+
     let place = await prisma.place.findUnique({
       where: { placeName },
     });
@@ -42,25 +43,25 @@ export async function POST(req: Request) {
       });
     }
 
-    if (!place?.id) {
-      return NextResponse.json(
-        { error: "Place creation failed" },
-        { status: 500 },
-      );
-    }
-
     const newRoom = await prisma.room.create({
       data: {
         roomDescription,
         roomType,
-        roomLatitude,
-        roomLongitude,
+        roomLatitude: parseFloat(roomLatitude),
+        roomLongitude: parseFloat(roomLongitude),
         roomLocation,
-        roomPrice,
+        roomPrice: parseInt(roomPrice),
         roomAbout,
         ownerId: user.id,
         placeId: place.id,
         hostId: user.id,
+      },
+    });
+
+    await prisma.roomGallery.create({
+      data: {
+        roomId: newRoom.id,
+        imageUrl: gallery,
       },
     });
 
@@ -71,63 +72,6 @@ export async function POST(req: Request) {
   }
 }
 
-// Update Room
-export async function PUT(req: Request) {
-  const session = await getServerSession(authConfig);
-
-  if (!session || !session.user?.email) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-
-  if (!user) {
-    return NextResponse.json({ message: "User not found" }, { status: 404 });
-  }
-
-  const body = await req.json();
-  const {
-    roomId,
-    roomDescription,
-    roomType,
-    roomLatitude,
-    roomLongitude,
-    roomLocation,
-    roomPrice,
-    roomAbout,
-  } = body;
-
-  if (!roomId) {
-    return NextResponse.json(
-      { error: "Room ID is required for update" },
-      { status: 400 },
-    );
-  }
-
-  try {
-    const updatedRoom = await prisma.room.update({
-      where: { id: roomId, ownerId: user.id },
-      data: {
-        roomDescription,
-        roomType,
-        roomLatitude,
-        roomLongitude,
-        roomLocation,
-        roomPrice,
-        roomAbout,
-      },
-    });
-
-    return NextResponse.json(updatedRoom, { status: 200 });
-  } catch (error) {
-    console.error("Error updating room:", error);
-    return NextResponse.json({ error: "Error updating room" }, { status: 500 });
-  }
-}
-
-// Delete Room
 export async function DELETE(req: Request) {
   const session = await getServerSession(authConfig);
 
@@ -143,35 +87,30 @@ export async function DELETE(req: Request) {
     return NextResponse.json({ message: "User not found" }, { status: 404 });
   }
 
-  const { searchParams } = new URL(req.url);
-  const roomId = searchParams.get("roomId");
-
-  if (!roomId) {
-    return NextResponse.json(
-      { error: "Room ID is required for deletion" },
-      { status: 400 },
-    );
-  }
-
   try {
+    const { searchParams } = new URL(req.url);
+    const roomId = searchParams.get("roomId");
+
+    if (!roomId) {
+      return NextResponse.json(
+        { message: "Room ID is required" },
+        { status: 400 },
+      );
+    }
+
     const room = await prisma.room.findUnique({
       where: { id: roomId },
     });
 
-    if (!room) {
-      return NextResponse.json({ error: "Room not found" }, { status: 404 });
-    }
-
-    if (room.ownerId !== user.id) {
+    if (!room || room.ownerId !== user.id) {
       return NextResponse.json(
-        { error: "Unauthorized to delete this room" },
-        { status: 403 },
+        { message: "Room not found or unauthorized" },
+        { status: 404 },
       );
     }
 
-    await prisma.room.delete({
-      where: { id: roomId },
-    });
+    await prisma.roomGallery.deleteMany({ where: { roomId } });
+    await prisma.room.delete({ where: { id: roomId } });
 
     return NextResponse.json(
       { message: "Room deleted successfully" },
@@ -179,6 +118,9 @@ export async function DELETE(req: Request) {
     );
   } catch (error) {
     console.error("Error deleting room:", error);
-    return NextResponse.json({ error: "Error deleting room" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Error deleting room" },
+      { status: 500 },
+    );
   }
 }

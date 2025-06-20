@@ -6,79 +6,70 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  GalleryTypes,
-  HostsTypes,
-  RoomsType,
-} from "@/lib/actions/place.actions";
-import { BookingTypes } from "@/lib/actions/users.actions";
-import { MapPinHouse, SearchX } from "lucide-react";
+import { GalleryTypes, RoomsType } from "@/lib/actions/place.actions";
+import { House, SearchX } from "lucide-react";
 import { useState } from "react";
-import PastTrips from "./pastTrips";
+import MyHouse from "./myHouse";
 
-type WishlistProps = {
-  bookings: BookingTypes[];
-  rooms: RoomsType[];
+type OwnHousesProps = {
+  ownHouses: RoomsType[];
   gallery: GalleryTypes[];
-  hosts: HostsTypes[];
+  hostId: string | null;
 };
 
-const Bookings = ({ bookings, rooms, gallery, hosts }: WishlistProps) => {
-  const [selectedBooking, setSelectedBooking] = useState<string | null>(null);
-
-  const handleBack = () => setSelectedBooking(null);
+const OwnHouses = ({ ownHouses, gallery, hostId }: OwnHousesProps) => {
+  const [selectedHouse, setselectedHouse] = useState<string | null>(null);
+  const [savedImage, setSavedImage] = useState<string[][]>()
+  const handleBack = () => setselectedHouse(null);
 
   return (
     <Dialog>
       <DialogTrigger>
         <div className="flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow">
-          <MapPinHouse size={40} />
-          <p>Past trips</p>
+          <House size={40} />
+          <p>Own Houses</p>
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Past trips</DialogTitle>
-          {bookings.length === 0 ? (
-            <div className="flex h-[20rem] flex-col items-center justify-center gap-2">
+          <DialogTitle className="text-center">Own Houses</DialogTitle>
+          {ownHouses.length === 0 ? (
+            <div className="flex flex-col justify-center h-[20rem] gap-2 items-center">
               <SearchX size={70} className="text-neutral-400" />
-              <p className="text-xl text-neutral-400">no results found</p>
+              <p className="text-neutral-400 text-xl">no results found</p>
             </div>
           ) : (
             <>
-              {!selectedBooking && (
+              {!selectedHouse && (
                 <div className="flex max-h-[20rem] flex-col gap-3 overflow-hidden overflow-y-auto">
-                  {bookings.map((booking, index) => {
-                    const findRoom = rooms.find((r) => r.id === booking.roomId);
+                  {ownHouses.map((room, index) => {
                     const findRoomImage = gallery
-                      .filter((image) => image.roomId === findRoom?.id)
-                      .map((img) => img.imageUrl);
-
+                      .filter((image) => image.roomId === room.id)
+                      .map((img) => img.imageUrl)
+                      
                     return (
                       <div key={index}>
                         <hr className="my-[1%] h-[0.5px] w-full bg-neutral-300" />
                         <div
                           className="flex cursor-pointer items-center gap-3"
-                          onClick={() => setSelectedBooking(booking.id!)} // Set the selected booking
+                          onClick={() => {setselectedHouse(room.id!); setSavedImage(findRoomImage)}} 
                         >
                           <div
                             className="h-[5rem] w-[5rem] rounded-2xl bg-cover bg-center bg-no-repeat"
-                            style={{
-                              backgroundImage: `url(${findRoomImage[0]})`,
-                            }}
+                            style={{ backgroundImage: `url(${findRoomImage.at(0)?.at(0)})` }}
                           ></div>
                           <div className="flex flex-col">
                             <div className="flex gap-1">
                               <p className="font-bold">Location:</p>
-                              <p>{findRoom?.roomLocation}</p>
+                              <p>{room.roomLocation}</p>
                             </div>
                             <div className="flex gap-1">
                               <p className="font-bold">Price:</p>
-                              <p>£{findRoom?.roomPrice}</p>
+                              <p>£{room.roomPrice}</p>
                             </div>
                             <div className="flex gap-1">
                               <p className="font-bold">Type:</p>
-                              <p>{findRoom?.roomType}</p>
+                              <p>{room.roomType}</p>
                             </div>
                           </div>
                         </div>
@@ -89,14 +80,12 @@ const Bookings = ({ bookings, rooms, gallery, hosts }: WishlistProps) => {
               )}
 
               {/* Detail View */}
-              {selectedBooking && (
-                <PastTrips
-                  bookingId={selectedBooking}
-                  bookings={bookings}
-                  rooms={rooms}
-                  gallery={gallery}
+              {selectedHouse && (
+                <MyHouse
+                  selectedHouse={selectedHouse}
+                  ownHouses={ownHouses}
+                  savedImages={savedImage!}
                   handleBack={handleBack}
-                  hosts={hosts}
                 />
               )}
             </>
@@ -107,4 +96,4 @@ const Bookings = ({ bookings, rooms, gallery, hosts }: WishlistProps) => {
   );
 };
 
-export default Bookings;
+export default OwnHouses;

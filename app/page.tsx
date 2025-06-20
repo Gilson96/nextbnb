@@ -24,6 +24,8 @@ export default async function Home() {
     return gallery.filter((image) => image.roomId === roomId);
   };
 
+  console.log(gallery[20].imageUrl.at(0));
+
   return (
     <main className="w-full bg-white">
       <Navigator places={places} rooms={rooms} session={session} />
@@ -51,7 +53,7 @@ export default async function Home() {
                     roomId={room.id}
                     roomPrice={room.roomPrice}
                     roomRating={Number(room.roomRating)}
-                    roomImage={findImage(room.id)[0].imageUrl.at(i + -1)!}
+                    roomImage={gallery[index].imageUrl.at(i - 2)!}
                   />
                 ))}
             </div>

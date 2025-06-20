@@ -8,10 +8,13 @@ import z from "zod";
 import { roomSchema } from "@/lib/validators/validators";
 import { Label } from "@/components/ui/label";
 import { FormInput } from "./formInput";
+import { useState } from "react";
 
 type RoomInput = z.infer<typeof roomSchema>;
 
 const Form = ({ hostId }: { hostId: string }) => {
+  const [uploading, setUploading] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -26,13 +29,54 @@ const Form = ({ hostId }: { hostId: string }) => {
     },
   });
 
+  // Cloudinary upload function
+  const uploadImageToCloudinary = async (file: File) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append(
+      "upload_preset",
+      `${process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}`,
+    );
+
+    try {
+      const res = await axios.post(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        formData,
+      );
+      return res.data.secure_url as string;
+    } catch (error) {
+      console.error("Cloudinary upload error:", error);
+      throw new Error("Image upload failed");
+    }
+  };
+
   const onSubmit = async (data: RoomInput) => {
     try {
-      await axios.post("/api/auth/addRoom", data);
-      toast("Room added successfully");
+      setUploading(true);
+
+      // Upload each image to Cloudinary and collect their URLs
+      const galleryUrls = [];
+      for (const file of data.gallery) {
+        if (file) {
+          const url = await uploadImageToCloudinary(file as File);
+          galleryUrls.push(url);
+        }
+      }
+
+      // Send the form data along with Cloudinary image URLs to the server
+      await axios.post("/api/auth/addRoom", {
+        ...data,
+        gallery: galleryUrls,
+        placeName: data.roomLocation, // You had this in your original code
+      });
+
+      toast("Room added successfully", { position: "top-center" });
       reset();
     } catch (error) {
       console.error("Error adding room:", error);
+      toast.error("Failed to add room");
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -118,7 +162,7 @@ const Form = ({ hostId }: { hostId: string }) => {
                 className="cursor-pointer"
                 onChange={(e) => {
                   if (e.target.files?.[0]) {
-                    field.onChange(e.target.files[0]); // Update specific index
+                    field.onChange(e.target.files[0]);
                   }
                 }}
               />
@@ -129,8 +173,13 @@ const Form = ({ hostId }: { hostId: string }) => {
           )}
         </div>
       ))}
-      <Button type="submit" className="cursor-pointer" disabled={isSubmitting}>
-        {isSubmitting ? "Submitting..." : "Add Room"}
+
+      <Button
+        type="submit"
+        className="cursor-pointer"
+        disabled={isSubmitting || uploading}
+      >
+        {isSubmitting || uploading ? "Submitting..." : "Add Room"}
       </Button>
     </form>
   );
