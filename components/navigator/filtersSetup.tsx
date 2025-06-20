@@ -14,7 +14,7 @@ export const FilterLocation = ({
 }: FilterLocationProps) => {
   const newPlaces = [{ id: "1", placeName: "all" }, ...places];
   return (
-    <>
+    <>  
       <p className="font-bold">Location</p>
       <Tabs defaultValue="all" className="w-full">
         <TabsList>

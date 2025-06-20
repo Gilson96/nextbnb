@@ -3,18 +3,13 @@ import Navigator from "@/components/navigator/navigator";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
-interface PageProps {
-  params: { filters: string[] };
-}
-
-const Page = async ({ params }: PageProps) => {
+const Page = async ({ params }: { params: { filters: string[] } }) => {
   const [location = "all", type = "all", price = "all"] = params.filters;
 
   const rooms = await getRooms();
   const hosts = await getHosts();
   const places = await getPlaces();
 
-  console.log(location);
   const showRoomsByFilters = () => {
     //clone to avoid mutating
     let filteredRooms = [...rooms];
@@ -50,7 +45,6 @@ const Page = async ({ params }: PageProps) => {
     return filteredRooms;
   };
 
-  console.log(showRoomsByFilters());
   return (
     <main className="flex w-full flex-col items-center justify-center">
       <Navigator places={places} rooms={rooms} />
