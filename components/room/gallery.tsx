@@ -36,6 +36,8 @@ const RoomGallery = ({
     initialWishlist,
   );
 
+  console.log(findRoomImage);
+  console.log(roomId);
   return (
     <>
       {/* mobile */}
@@ -49,7 +51,7 @@ const RoomGallery = ({
                     style={{
                       backgroundImage: `url("${img}")`,
                     }}
-                    className={`flex h-[16rem] w-[27rem] items-start justify-between bg-cover bg-no-repeat pt-[4%] pr-[5%] pl-[3%]`}
+                    className={`flex h-[16rem] w-[27rem] items-start justify-between bg-cover bg-no-repeat pt-[4%] pr-[5%] pl-[3%] [@media(min-width:435px)_and_(max-width:767px)]:h-[30rem] [@media(min-width:435px)_and_(max-width:767px)]:w-[40rem]`}
                   >
                     <Link
                       href={"/"}
@@ -97,19 +99,26 @@ const RoomGallery = ({
             </Button>
           </DialogTrigger>
           <DialogContent className="flex h-[20rem] w-full items-center justify-center">
-            <Carousel className="h-full w-[80%] place-content-center place-items-center">
-              <CarouselContent>
-                {findRoomImage?.map((image, index) =>
-                  image.imageUrl.map((img) => (
-                    <CarouselItem key={index}>
-                      <Image width={500} height={500} src={img} alt={""} />
-                    </CarouselItem>
-                  )),
-                )}
-              </CarouselContent>
-              <CarouselPrevious className="cursor-pointer" />
-              <CarouselNext className="cursor-pointer" />
-            </Carousel>
+            <div className="flex h-full w-full justify-center">
+              <div className="h-full w-full flex justify-center items-center ">
+                <Carousel className="w-full">
+                  <CarouselContent>
+                    {findRoomImage?.map((image, index) =>
+                      image.imageUrl.map((img) => (
+                        <CarouselItem key={index}>
+                          <div
+                            style={{ backgroundImage: `url(${img})` }}
+                            className="relative h-[13rem] w-full bg-cover bg-center bg-no-repeat"
+                          ></div>
+                        </CarouselItem>
+                      )),
+                    )}
+                  </CarouselContent>
+                  <CarouselPrevious className="top-1/2 -left-4 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-full bg-white/80 shadow backdrop-blur-sm" />
+                  <CarouselNext className="top-1/2 -right-4 h-8 w-8 -translate-y-1/2 cursor-pointer rounded-full bg-white/80 shadow backdrop-blur-sm" />
+                </Carousel>
+              </div>
+            </div>
           </DialogContent>
         </Dialog>
       </div>

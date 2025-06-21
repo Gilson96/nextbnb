@@ -30,7 +30,7 @@ const HeaderAccount = ({ session }: HeaderAccountProps) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => {signOut({ callbackUrl: "/sign-in" })}}
+            onClick={() => {signOut({ callbackUrl: "/" })}}
           >
             Logout
           </DropdownMenuItem>

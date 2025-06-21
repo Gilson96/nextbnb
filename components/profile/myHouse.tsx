@@ -1,4 +1,5 @@
 "use client";
+
 import { GalleryTypes, RoomsType } from "@/lib/actions/place.actions";
 import Link from "next/link";
 import {
@@ -13,7 +14,7 @@ import {
   AlertDialogHeader,
 } from "@/components/ui/alert-dialog";
 import { Button } from "../ui/button";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import axios from "axios";
 import {
@@ -23,6 +24,7 @@ import {
   CarouselPrevious,
   CarouselNext,
 } from "../ui/carousel";
+import { useRouter } from "next/navigation";
 
 type myHouseProps = {
   selectedHouse: string;
@@ -40,13 +42,20 @@ const MyHouse = ({
   const findMyHouse = ownHouses.find((house) => house.id === selectedHouse);
   const [open, setOpen] = useState(false);
   const [...roomImages] = savedImages;
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const handleDelete = async () => {
     try {
-      await await axios.delete(`/api/auth/addRoom?roomId=${selectedHouse}`);
+      await axios.delete(`/api/auth/addRoom?roomId=${selectedHouse}`);
       toast.success("Room deleted successfully", { position: "top-center" });
       handleBack();
       setOpen(false);
+
+      // Refresh the session and page for instant UX
+      startTransition(() => {
+        router.refresh();
+      });
     } catch (error) {
       console.error("Error deleting room:", error);
       toast.error("Failed to delete room", { position: "top-center" });
@@ -67,10 +76,10 @@ const MyHouse = ({
           <Carousel className="w-full">
             <CarouselContent>
               {roomImages[0].map((imageSet, index) => (
-                <CarouselItem>
+                <CarouselItem key={index}>
                   <div
                     style={{ backgroundImage: `url(${imageSet})` }}
-                    className="h-[13rem] relative w-full overflow-hidden rounded-xl bg-cover bg-center bg-no-repeat sm:h-[300px] md:h-[350px] lg:h-[250px]"
+                    className="relative h-[13rem] w-full overflow-hidden rounded-xl bg-cover bg-center bg-no-repeat sm:h-[300px] md:h-[350px] lg:h-[250px]"
                   ></div>
                 </CarouselItem>
               ))}

@@ -149,6 +149,21 @@ const Form = ({ hostId }: { hostId: string }) => {
         )}
       </div>
 
+      <div>
+        <Label htmlFor="roomAmenites">Amenities</Label>
+        <input
+          {...register("roomAmenities", {
+            setValueAs: (v) =>
+              v.split(",").map((amenity: string) => amenity.trim()),
+          })}
+          placeholder="e.g. Tv,Wi-fi,"
+          className="w-full rounded border p-2"
+        />
+        {errors.roomAmenities && (
+          <p className="text-red-500">{errors.roomAmenities?.message}</p>
+        )}
+      </div>
+
       {[0, 1, 2].map((index) => (
         <div key={index}>
           <Label htmlFor={`gallery-${index}`}>Room Image {index + 1}</Label>

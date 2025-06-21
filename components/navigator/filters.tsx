@@ -34,7 +34,10 @@ const Filters = ({ places }: FiltersProps) => {
           <AlertDialogTitle className="flex items-center justify-between">
             <p></p>
             <p className="font-bold">Filters</p>
-            <X />
+            <AlertDialogCancel className="shadow-none border-0 cursor-pointer">
+              {" "}
+              <X />
+            </AlertDialogCancel>
           </AlertDialogTitle>
           <hr className="h-[1px] w-full bg-neutral-300" />
         </AlertDialogHeader>
@@ -50,10 +53,14 @@ const Filters = ({ places }: FiltersProps) => {
           <FilterPrice setPrice={setPrice} />
         </AlertDialogDescription>
         <AlertDialogFooter>
-          <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <Link href={`/place/${location}/${type}/${price}`}>
-            <AlertDialogAction>Confirm</AlertDialogAction>
-          </Link>
+          <div className="flex justify-between">
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <Link href={`/place/${location}/${type}/${price}`}>
+              <AlertDialogAction className="cursor-pointer bg-cyan-500">
+                Confirm
+              </AlertDialogAction>
+            </Link>
+          </div>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

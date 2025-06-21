@@ -15,6 +15,9 @@ export const roomSchema = z.object({
   roomLocation: z.string().min(2, "Location is required"),
   roomPrice: z.coerce.number().min(20, "Price must be at least 20"),
   roomAbout: z.string().min(10, "About section is too short"),
+  roomAmenities: z
+    .array(z.string().min(2))
+    .min(3, "At least 3 amenities are required"),
   hostId: z.string(),
   gallery: z
     .array(

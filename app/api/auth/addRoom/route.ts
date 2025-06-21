@@ -31,17 +31,16 @@ export async function POST(req: Request) {
       roomAbout,
       gallery,
       placeName,
+      roomAmenities,
     } = body;
 
-    let place = await prisma.place.findUnique({
-      where: { placeName },
-    });
+    let place = await prisma.place.findUnique({ where: { placeName } });
 
     if (!place) {
-      place = await prisma.place.create({
-        data: { placeName },
-      });
+      place = await prisma.place.create({ data: { placeName } });
     }
+
+    const randomRating = (Math.random() * (4.9 - 3.2) + 3.2).toFixed(2);
 
     const newRoom = await prisma.room.create({
       data: {
@@ -55,6 +54,7 @@ export async function POST(req: Request) {
         ownerId: user.id,
         placeId: place.id,
         hostId: user.id,
+        roomRating: parseFloat(randomRating),
       },
     });
 
@@ -65,62 +65,22 @@ export async function POST(req: Request) {
       },
     });
 
+    if (Array.isArray(roomAmenities)) {
+      const amenityPromises = roomAmenities.map((amenity: string) => {
+        return prisma.roomAmenities.create({
+          data: {
+            amenityName: amenity,
+            roomId: newRoom.id,
+          },
+        });
+      });
+
+      await Promise.all(amenityPromises);
+    }
+
     return NextResponse.json(newRoom, { status: 201 });
   } catch (error) {
     console.error("Error creating room:", error);
     return NextResponse.json({ error: "Error creating room" }, { status: 500 });
-  }
-}
-
-export async function DELETE(req: Request) {
-  const session = await getServerSession(authConfig);
-
-  if (!session || !session.user?.email) {
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { email: session.user.email },
-  });
-
-  if (!user) {
-    return NextResponse.json({ message: "User not found" }, { status: 404 });
-  }
-
-  try {
-    const { searchParams } = new URL(req.url);
-    const roomId = searchParams.get("roomId");
-
-    if (!roomId) {
-      return NextResponse.json(
-        { message: "Room ID is required" },
-        { status: 400 },
-      );
-    }
-
-    const room = await prisma.room.findUnique({
-      where: { id: roomId },
-    });
-
-    if (!room || room.ownerId !== user.id) {
-      return NextResponse.json(
-        { message: "Room not found or unauthorized" },
-        { status: 404 },
-      );
-    }
-
-    await prisma.roomGallery.deleteMany({ where: { roomId } });
-    await prisma.room.delete({ where: { id: roomId } });
-
-    return NextResponse.json(
-      { message: "Room deleted successfully" },
-      { status: 200 },
-    );
-  } catch (error) {
-    console.error("Error deleting room:", error);
-    return NextResponse.json(
-      { message: "Error deleting room" },
-      { status: 500 },
-    );
   }
 }

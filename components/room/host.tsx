@@ -16,21 +16,29 @@ const Host = async ({ hostId, roomRating, roomId }: HostProps) => {
   const findReviews = reviews.filter((review) => review.roomId === roomId);
 
   return (
-    <div className="my-[5%] flex w-full flex-col items-center gap-1 p-[2%] md:flex md:flex-row md:items-start md:justify-between md:my-0">
-      <div className="flex flex-col w-full lg:w-[30%]">
+    <div className="my-[5%] flex w-full flex-col items-center gap-1 p-[2%] md:my-0 md:flex md:flex-row md:items-start md:justify-between">
+      <div className="flex w-full flex-col lg:w-[30%]">
         <p className="mb-[2%] text-xl font-bold">Meet your host</p>
         <div className="flex h-[12rem] items-center justify-between rounded-xl border p-[4%] shadow">
           <div className="flex flex-col items-center justify-center">
             <RxAvatar size={70} />
-            <p className="text-xl font-bold">{findHosts?.hostName}</p>
+            <p className="text-xl font-bold">
+              {findHosts?.hostName === undefined
+                ? "Admin"
+                : findHosts?.hostName}
+            </p>
             <p className="text-neutral-600">Host</p>
           </div>
           <div className="flex flex-col gap-2">
-            <div className="flex flex-col">
+            <div
+              className={`${findReviews.length === 0 ? "hidden" : "flex flex-col"}`}
+            >
               <p className="text-lg font-bold">{findReviews.length}</p>
               <p className="text-xs text-neutral-600">Reviews</p>
             </div>
-            <hr className="h-[1px] bg-neutral-400" />
+            <hr
+              className={`${findReviews.length === 0 ? "hidden" : "h-[1px] bg-neutral-400"}`}
+            />
             <div className="flex flex-col">
               <div className="flex items-center gap-1">
                 <p className="text-lg font-bold">{roomRating}</p>
@@ -40,13 +48,19 @@ const Host = async ({ hostId, roomRating, roomId }: HostProps) => {
             </div>
             <hr className="h-[1px] bg-neutral-400" />
             <div className="flex flex-col">
-              <p className="text-lg font-bold">{findHosts?.hostingYears}</p>
+              <p className="text-lg font-bold">
+                {findHosts?.hostingYears === undefined
+                  ? 2
+                  : findHosts?.hostingYears}
+              </p>
               <p className="text-xs text-neutral-600">Years hosting</p>
             </div>
           </div>
         </div>
       </div>
-      <div className="mt-[4%] lg:w-[60%] flex flex-col p-[2%]">
+      <div
+        className={`${findHosts?.hostDescription === undefined ? "hidden" : "mt-[4%] flex flex-col p-[2%] lg:w-[60%]"} `}
+      >
         <p className="pb-[4%] text-center text-xl font-bold md:text-start">
           About the host
         </p>

@@ -42,6 +42,7 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
     findRoom.roomDescription.length,
   );
 
+
   return (
     <main className="relative flex h-full w-full flex-col">
       <Navigator places={places} rooms={rooms} session={session} />
@@ -56,8 +57,8 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
         <div className="md:relative md:flex md:justify-between md:px-[2%]">
           <div className="">
             <RoomDetails
-              hostName={findHost?.hostName!}
-              hostingYears={findHost?.hostingYears!}
+              hostName={findHost?.hostName! === undefined? 'Admin' : findHost?.hostName!} 
+              hostingYears={findHost?.hostingYears! === undefined? 2 : findHost?.hostingYears!}
               roomDescription={findRoom?.roomDescription!}
               roomType={findRoom?.roomType!}
               roomAbout={findRoom?.roomAbout!}
