@@ -4,12 +4,15 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { House, User, Lock, Loader2 } from "lucide-react";
 import { Button } from "../ui/button";
+import { useRouter } from "next/navigation";
 
 const Form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -23,7 +26,7 @@ const Form = () => {
     });
 
     if (res?.ok) {
-      return;
+      router.push("/home"); // Add this to navigate after successful sign-in
     } else {
       setError("Invalid email or password.");
       setLoading(false);

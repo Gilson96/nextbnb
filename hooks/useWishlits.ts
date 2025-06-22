@@ -1,22 +1,36 @@
 "use client";
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
-import { addToWishlist, removeFromWishlist } from "@/lib/actions/users.actions";
+import { addToWishlist, removeFromWishlist, getWishlist } from "@/lib/actions/users.actions";
 
-export function useWishlist(userId: string | undefined | null, initialWishlist: { id: string }[] = []) {
-  const [wishlist, setWishlist] = useState<{ id: string }[]>(initialWishlist);
+export function useWishlist(userId: string | undefined | null) {
+  const [wishlist, setWishlist] = useState<{ id: string; roomId: string }[]>([]);
   const [isPending, startTransition] = useTransition();
 
-  const isInWishlist = (roomId: string) =>
-    wishlist.some((room) => room.id === roomId);
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchWishlist = async () => {
+      try {
+        const data = await getWishlist(); // Assuming this returns [{ id, roomId }]
+        setWishlist(data);
+      } catch (error) {
+        console.error("Failed to fetch wishlist", error);
+      }
+    };
+
+    fetchWishlist();
+  }, [userId]);
+
+  const isInWishlist = (roomId: string) => wishlist.some((item) => item.roomId === roomId);
 
   const addRoomToWishlist = (roomId: string) => {
     if (!userId) return;
 
     startTransition(async () => {
       try {
-        await addToWishlist({ userId, roomId });
-        setWishlist((prev) => [...prev, { id: roomId }]);
+        const newWishlistItem = await addToWishlist({ userId, roomId }); // Ideally returns the created wishlist item
+        setWishlist((prev) => [...prev, newWishlistItem]); // Use the full item returned from the server
         toast.success("Added to wishlist", { position: "top-center" });
       } catch (error) {
         console.error("Failed to add to wishlist", error);
@@ -30,8 +44,8 @@ export function useWishlist(userId: string | undefined | null, initialWishlist: 
 
     startTransition(async () => {
       try {
-        await removeFromWishlist({ userId, roomId });
-        setWishlist((prev) => prev.filter((room) => room.id !== roomId));
+        await removeFromWishlist({ roomId });
+        setWishlist((prev) => prev.filter((item) => item.roomId !== roomId));
         toast.success("Removed from wishlist", { position: "top-center" });
       } catch (error) {
         console.error("Failed to remove from wishlist", error);

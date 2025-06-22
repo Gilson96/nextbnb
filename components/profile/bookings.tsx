@@ -21,17 +21,19 @@ type WishlistProps = {
   rooms: RoomsType[];
   gallery: GalleryTypes[];
   hosts: HostsTypes[];
+  user: boolean
 };
 
-const Bookings = ({ bookings, rooms, gallery, hosts }: WishlistProps) => {
+const Bookings = ({ bookings, rooms, gallery, hosts, user }: WishlistProps) => {
   const [selectedBooking, setSelectedBooking] = useState<string | null>(null);
 
   const handleBack = () => setSelectedBooking(null);
 
+  console.log(hosts)
   return (
     <Dialog>
       <DialogTrigger>
-        <div className="flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow">
+        <div className={`${!user? 'w-[10rem]' : ''} flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow`}>
           <MapPinHouse size={40} />
           <p>Past trips</p>
         </div>

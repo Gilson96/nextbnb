@@ -22,7 +22,7 @@ const HeaderAccount = ({ session }: HeaderAccountProps) => {
           <RxAvatar size={40} className="cursor-pointer" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mr-[0.7rem] md:mr-[3rem]">
-          <DropdownMenuLabel>{session?.user?.name}</DropdownMenuLabel>
+          <DropdownMenuLabel className="font-bold">{session?.user?.name}</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <Link href={`/profile`}>Profile</Link>

@@ -28,10 +28,12 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
   const image: GalleryTypes[] = await getRoomGallery();
   const places: PlacesType[] = await getPlaces();
   const session: Session | null = await getServerSession(authConfig);
+  const admin = session?.user.name === "Admin";
 
   const findRoom = rooms.find((room) => room.id === id);
   const findHost = hosts.find((host) => host.id === findRoom?.hostId);
   const findRoomImage = image.filter((image) => image.roomId === id);
+  const isAdminRoom = rooms.some((room) => room.hostId === session?.user.id);
 
   const castRoomCoor = {
     lat: Number(findRoom?.roomLatitude),
@@ -41,7 +43,6 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
     findRoom.roomDescription.length - 6,
     findRoom.roomDescription.length,
   );
-
 
   return (
     <main className="relative flex h-full w-full flex-col">
@@ -57,8 +58,16 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
         <div className="md:relative md:flex md:justify-between md:px-[2%]">
           <div className="">
             <RoomDetails
-              hostName={findHost?.hostName! === undefined? 'Admin' : findHost?.hostName!} 
-              hostingYears={findHost?.hostingYears! === undefined? 2 : findHost?.hostingYears!}
+              hostName={
+                findHost?.hostName! === undefined
+                  ? "Admin"
+                  : findHost?.hostName!
+              }
+              hostingYears={
+                findHost?.hostingYears! === undefined
+                  ? 2
+                  : findHost?.hostingYears!
+              }
               roomDescription={findRoom?.roomDescription!}
               roomType={findRoom?.roomType!}
               roomAbout={findRoom?.roomAbout!}
@@ -82,16 +91,20 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
         <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
         <Maps findRoom={castRoomCoor} placeName={placeName!} />
         <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
-        <Reviews
-          roomId={findRoom?.id!}
-          roomRating={Number(findRoom?.roomRating)}
-        />
-        <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
-        <Host
-          hostId={findRoom?.hostId!}
-          roomId={findRoom?.id!}
-          roomRating={Number(findRoom?.roomRating)}
-        />
+        <div className={`${!isAdminRoom? 'flex-row-reverse w-full justify-between' : 'hidden'}`}>
+          <Reviews
+            roomId={findRoom?.id!}
+            roomRating={Number(findRoom?.roomRating)}
+          />
+          <hr
+            className="h-[1px] w-[95%] place-self-center bg-neutral-300"
+          />
+          <Host
+            hostId={findRoom?.hostId!}
+            roomId={findRoom?.id!}
+            roomRating={Number(findRoom?.roomRating)}
+          />
+        </div>
       </div>
 
       <Footer

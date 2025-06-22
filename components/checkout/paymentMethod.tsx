@@ -9,7 +9,6 @@ import { createBooking } from "@/lib/actions/users.actions";
 import { toast } from "sonner";
 
 type PaymentMethodProps = {
-  hostName: string;
   roomPrice: number;
   totalPrice: number;
   setShowSuccessModal: Dispatch<SetStateAction<boolean>>;

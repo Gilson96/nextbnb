@@ -6,9 +6,11 @@ import OwnHouses from "@/components/profile/ownHouses";
 import Wishlists from "@/components/profile/wishlists";
 import {
   getHosts,
+  getPlaces,
   getRoomGallery,
   getRooms,
   HostsTypes,
+  PlacesType,
   RoomsType,
 } from "@/lib/actions/place.actions";
 import {
@@ -26,19 +28,20 @@ const Profile = async () => {
 
   const gallery = await getRoomGallery();
   const host: HostsTypes[] = await getHosts();
-  const whichlist: WishlistTypes[] = await getWishlist(session?.user.id!);
+  const whichlist: WishlistTypes[] = await getWishlist();
   const rooms: RoomsType[] = await getRooms();
   const bookings: BookingTypes[] = await getBookings(session?.user.id!);
+  const places: PlacesType[] = await getPlaces();
 
   const userBookings = bookings.filter(
     (booking) => booking.userId === session?.user.id,
   );
   const ownHouses = rooms.filter((room) => room.hostId === session?.user.id);
 
-  console.log(ownHouses);
+  console.log(whichlist)
   return (
     <>
-      <Navigator session={session} />
+      <Navigator session={session} rooms={rooms} places={places} />
       <section className="flex flex-col p-[2%]">
         <p className="pb-[3%] text-3xl font-bold">Profile</p>
         <div className="lg:flex lg:items-center lg:justify-center lg:gap-3">
@@ -54,24 +57,30 @@ const Profile = async () => {
               </div>
               <hr className="h-[1px] w-full text-neutral-400" />
               {admin ? (
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">{ownHouses.length}</p>
-                  <p>Own houses</p>
-                </div>
+                <>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-bold">{ownHouses.length}</p>
+                    <p>Own houses</p>
+                  </div>
+                  <div className="flex flex-col">
+                    <p className="text-xl font-bold">4</p>
+                    <p>reviews</p>
+                  </div>
+                </>
               ) : (
-                <div className="flex flex-col">
-                  <p className="text-xl font-bold">4</p>
-                  <p>reviews</p>
-                </div>
+                <div></div>
               )}
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2.5 max-lg:mt-[2%]">
+          <div
+            className={`${admin ? "grid grid-cols-2 gap-2.5 max-lg:mt-[2%]" : "flex flex-col gap-3"}`}
+          >
             <Bookings
               hosts={host}
               bookings={bookings}
               rooms={rooms}
               gallery={gallery}
+              user={admin}
             />
             {admin && <NewPlace hostId={session.user.id} />}
             <Wishlists
@@ -79,6 +88,7 @@ const Profile = async () => {
               host={host}
               rooms={rooms}
               wishlist={whichlist}
+              user={admin}
             />
             {admin && (
               <OwnHouses

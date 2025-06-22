@@ -82,17 +82,17 @@ const Reviews = async ({ roomId, roomRating }: ReviewsProps) => {
       >
         <div className="flex flex-col items-center">
           <div className="flex items-end">
-            <Star fill="black" size={70} />
+            <Star fill="black" size={70} className="relative left-6" />
             <Star fill="black" size={140} />
-            <Star fill="black" size={70} />
+            <Star fill="black" size={70} className="relative right-6" />
           </div>
           <p className="text-xl font-bold">{roomRating} stars</p>
         </div>
-        <div className="flex w-full gap-3 overflow-x-auto">
+        <div className="flex gap-3 overflow-hidden max-lg:w-[60%] max-lg:overflow-x-auto">
           {filteredReviews.map((review) => (
             <article
               key={review.id}
-              className="flex h-[10rem] min-w-[20rem] flex-col rounded-2xl border p-[2%] text-sm shadow"
+              className="flex h-[10rem] lg:w-[14rem] xl:w-[19rem] flex-col rounded-2xl border p-[2%] text-sm shadow max-lg:min-w-[20rem]"
               role="article"
             >
               <header className="flex w-full items-center justify-between pb-[5%]">

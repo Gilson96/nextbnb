@@ -70,7 +70,7 @@ export const StickyFooter = ({
           aria-pressed={isInWishlist(room.id)}
           onClick={() => toggleWishlist(room.id)}
           disabled={loading}
-          className="focus:outline-none"
+          className="focus:outline-none cursor-pointer"
           aria-label={
             isInWishlist(room.id) ? "Remove from wishlist" : "Add to wishlist"
           }

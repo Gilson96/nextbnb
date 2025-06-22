@@ -27,13 +27,9 @@ const RoomGallery = ({
   findRoomImage,
   session,
   roomId,
-  initialWishlist = [],
   userId = session?.user.id,
 }: RoomGalleryProps) => {
-  const { isInWishlist, toggleWishlist, loading } = useWishlist(
-    userId,
-    initialWishlist,
-  );
+  const { isInWishlist, toggleWishlist, loading } = useWishlist(userId);
 
   return (
     <>
@@ -43,7 +39,7 @@ const RoomGallery = ({
           <CarouselContent className="w-full">
             {findRoomImage?.map((image, index) =>
               image.imageUrl.map((img) => (
-                <CarouselItem key={index} className="w-full">
+                <CarouselItem key={image.id} className="w-full">
                   <div
                     style={{
                       backgroundImage: `url("${img}")`,

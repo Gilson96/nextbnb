@@ -1,9 +1,20 @@
-import AuthRedirect from "@/components/signUser/authRedirect";
+import { authConfig } from "@/auth";
+import { getServerSession } from "next-auth/next";
+import { redirect } from "next/navigation";
+import Form from "@/components/signUser/form";
 
-export default function SignInPage() {
+const SignIn = async () => {
+  const session = await getServerSession(authConfig);
+
+  if (session) {
+    redirect("/home");
+  }
+  
   return (
-    <main className="flex h-screen items-center justify-center">
-      <AuthRedirect />
-    </main>
+    <div className="flex h-screen flex-col items-center justify-center gap-2">
+      <Form />
+    </div>
   );
-}
+};
+
+export default SignIn;

@@ -16,7 +16,6 @@ export const RoomDetails = ({
   roomAbout,
 }: RoomDetailsProps) => {
 
-  console.log(hostName)
   return (
     <div className="md:w-[80%] lg:w-[60%] md:p-[2%] md:text-base">
       {/* room type */}

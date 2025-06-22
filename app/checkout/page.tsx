@@ -7,7 +7,7 @@ import { ArrowLeft, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const Page = () => {
+const Checkout = () => {
   const cart = useStore((state) => state.cart);
   const router = useRouter();
   const clearCart = useStore((state) => state.clearCart);
@@ -43,10 +43,9 @@ const Page = () => {
           {cart.map((c, index) => (
             <div
               key={index}
-              className={`flex ${index % 2 === 0 ? "lg:hidden" : "max-lg:hidden"} flex-col lg:flex-row lg:justify-between`}
+              className={`flex  flex-col lg:flex-row lg:justify-between`}
             >
               <PaymentMethod
-                hostName={c.host.hostName}
                 totalPrice={c.totalPrice}
                 roomPrice={c.room.roomPrice}
                 setShowSuccessModal={setShowSuccessModal}
@@ -54,7 +53,7 @@ const Page = () => {
                 session={c.session}
               />
               <RequestBook
-                hostName={c.host.hostName}
+                hostName={c.host?.hostName === undefined? 'Admin' : c.host.hostName}
                 roomDescription={c.room.roomDescription}
                 roomRating={Number(c.room.roomRating)}
                 roomImage={c.image}
@@ -67,4 +66,4 @@ const Page = () => {
   );
 };
 
-export default Page
+export default Checkout

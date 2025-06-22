@@ -41,8 +41,8 @@ const Page = async ({ params }: { params: { filters: string[] } }) => {
           return (
             <RoomList
               key={room.id}
-              hostName={host?.hostName || "Unknown Host"}
-              hostingYears={host?.hostingYears || 0}
+              hostName={host?.hostName || "Admin"}
+              hostingYears={host?.hostingYears || 2}
               id={room.id}
               roomDescription={room.roomDescription}
               roomPrice={room.roomPrice}

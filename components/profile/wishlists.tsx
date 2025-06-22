@@ -20,14 +20,16 @@ type WishlistProps = {
   gallery: GalleryTypes[];
   host: HostsTypes[];
   rooms: RoomsType[];
+  user: boolean;
 };
 
-const Wishlists = ({ wishlist, gallery, rooms }: WishlistProps) => {
+const Wishlists = ({ wishlist, gallery, rooms, user }: WishlistProps) => {
+  
   return (
     <Dialog>
       <DialogTrigger>
         {" "}
-        <div className="flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow">
+        <div className={`${!user? 'w-[10rem]' : ''} flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow`}>
           <Heart size={40} />
           <p>Wishlist</p>
         </div>

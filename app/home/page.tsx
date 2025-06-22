@@ -24,7 +24,7 @@ export default async function Home() {
   if (!session) {
     redirect("/");
   }
-  
+
   return (
     <main className="w-full bg-white">
       <Navigator places={places} rooms={rooms} session={session} />
@@ -48,6 +48,7 @@ export default async function Home() {
                 .filter((room) => room.roomLocation === place.placeName)
                 .map((room, index) => (
                   <RoomsList
+                    key={index}
                     roomDescription={room.roomDescription}
                     roomId={room.id}
                     roomPrice={room.roomPrice}
