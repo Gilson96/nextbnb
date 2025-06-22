@@ -6,18 +6,41 @@ export async function POST(request: Request) {
   try {
     const { userId, roomId } = await request.json();
 
-    if (!userId || !roomId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+    if (
+      !userId ||
+      !roomId ||
+      typeof userId !== "string" ||
+      typeof roomId !== "string"
+    ) {
+      return NextResponse.json(
+        { error: "Invalid or missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    // Check if already in wishlist
+    const existing = await prisma.wishlist.findFirst({
+      where: { userId, roomId },
+    });
+
+    if (existing) {
+      return NextResponse.json(
+        { message: "Already in wishlist" },
+        { status: 200 },
+      );
     }
 
     const wishlist = await prisma.wishlist.create({
       data: { userId, roomId },
     });
 
-    return NextResponse.json(wishlist, { status: 200 });
+    return NextResponse.json(wishlist, { status: 201 });
   } catch (error) {
     console.error("POST error:", error);
-    return NextResponse.json({ error: "Failed to add to wishlist" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to add to wishlist" },
+      { status: 500 },
+    );
   }
 }
 
@@ -31,6 +54,9 @@ export async function GET() {
     return NextResponse.json(wishlist, { status: 200 });
   } catch (error) {
     console.error("GET error:", error);
-    return NextResponse.json({ error: "Failed to fetch wishlist" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch wishlist" },
+      { status: 500 },
+    );
   }
 }

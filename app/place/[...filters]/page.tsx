@@ -10,40 +10,24 @@ const Page = async ({ params }: { params: { filters: string[] } }) => {
   const hosts = await getHosts();
   const places = await getPlaces();
 
-  const showRoomsByFilters = () => {
-    //clone to avoid mutating
-    let filteredRooms = [...rooms];
-    // By location
-    if (location !== "all") {
-      filteredRooms = filteredRooms.filter(
-        (room) => room.roomLocation === location,
-      );
-    }
-    // By type
-    if (type !== "all") {
+  const filteredRooms = [...rooms]
+    .filter((room) => location === "all" || room.roomLocation === location)
+    .filter((room) => {
+      if (type === "all") return true;
       if (type === "room") {
-        filteredRooms = filteredRooms.filter(
-          (room) =>
-            room.roomType === "Single room" || room.roomType === "Double room",
-        );
-      } else {
-        filteredRooms = filteredRooms.filter(
-          (room) =>
-            room.roomType === "Studio" ||
-            room.roomType === "1-bedroom apartment" ||
-            room.roomType === "Entire place",
+        return (
+          room.roomType === "Single room" || room.roomType === "Double room"
         );
       }
-    }
-    // By price
-    if (price === "high") {
-      filteredRooms = filteredRooms.sort((a, b) => b.roomPrice - a.roomPrice);
-    } else if (price === "low") {
-      filteredRooms = filteredRooms.sort((a, b) => a.roomPrice - b.roomPrice);
-    }
-
-    return filteredRooms;
-  };
+      return ["Studio", "1-bedroom apartment", "Entire place"].includes(
+        room.roomType,
+      );
+    })
+    .sort((a, b) => {
+      if (price === "high") return b.roomPrice - a.roomPrice;
+      if (price === "low") return a.roomPrice - b.roomPrice;
+      return 0;
+    });
 
   return (
     <main className="flex w-full flex-col items-center justify-center">
@@ -52,20 +36,21 @@ const Page = async ({ params }: { params: { filters: string[] } }) => {
         <Filters places={places} />
       </i>
       <div className="lg flex flex-col gap-2 md:mt-[5%] md:grid md:grid-cols-2 md:gap-[5rem] lg:mt-0 lg:flex lg:flex-row lg:flex-wrap lg:p-[2%]">
-        {showRoomsByFilters().map((room, index) => (
-          <RoomList
-            key={index}
-            hostName={hosts.find((h) => h.id === room.hostId)?.hostName!}
-            hostingYears={
-              hosts.find((h) => h.id === room.hostId)?.hostingYears!
-            }
-            id={room.id}
-            roomDescription={room.roomDescription}
-            roomPrice={room.roomPrice}
-            roomRating={Number(room.roomRating)}
-            roomType={room.roomType}
-          />
-        ))}
+        {filteredRooms.map((room) => {
+          const host = hosts.find((h) => h.id === room.hostId);
+          return (
+            <RoomList
+              key={room.id}
+              hostName={host?.hostName || "Unknown Host"}
+              hostingYears={host?.hostingYears || 0}
+              id={room.id}
+              roomDescription={room.roomDescription}
+              roomPrice={room.roomPrice}
+              roomRating={Number(room.roomRating)}
+              roomType={room.roomType}
+            />
+          );
+        })}
       </div>
     </main>
   );

@@ -33,8 +33,6 @@ export default function CheckoutForm({
   const clearCart = useStore((state) => state.clearCart);
   const router = useRouter();
 
-  const [paymentError, setPaymentError] = useState<string | null>(null);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
@@ -63,7 +61,6 @@ export default function CheckoutForm({
         }, 3000);
       } catch (error) {
         console.error("Booking failed:", error);
-        setPaymentError("Booking failed. Please contact support.");
       }
     }
   };

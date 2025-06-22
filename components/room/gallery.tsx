@@ -11,7 +11,6 @@ import Link from "next/link";
 import { ArrowLeft, Grip, Heart } from "lucide-react";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-import Image from "next/image";
 import { Session } from "next-auth";
 import { useWishlist } from "@/hooks/useWishlits";
 
@@ -36,8 +35,6 @@ const RoomGallery = ({
     initialWishlist,
   );
 
-  console.log(findRoomImage);
-  console.log(roomId);
   return (
     <>
       {/* mobile */}
@@ -100,7 +97,7 @@ const RoomGallery = ({
           </DialogTrigger>
           <DialogContent className="flex h-[20rem] w-full items-center justify-center">
             <div className="flex h-full w-full justify-center">
-              <div className="h-full w-full flex justify-center items-center ">
+              <div className="flex h-full w-full items-center justify-center">
                 <Carousel className="w-full">
                   <CarouselContent>
                     {findRoomImage?.map((image, index) =>

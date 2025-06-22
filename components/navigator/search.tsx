@@ -25,10 +25,7 @@ type SearchProps = {
   setOpenInput: Dispatch<SetStateAction<boolean>>;
 };
 
-const Search = ({
-  searchPlacesOrRooms,
-  setOpenInput,
-}: SearchProps) => {
+const Search = ({ searchPlacesOrRooms, setOpenInput }: SearchProps) => {
   return (
     <div className="flex h-[10rem] w-full flex-col items-start justify-start gap-2 overflow-hidden overflow-y-auto rounded-2xl border p-[3%] shadow">
       {/* Type Narrowing */}

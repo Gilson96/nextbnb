@@ -1,18 +1,20 @@
 "use client";
-
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { Input } from "../ui/input";
-import { House, User, Lock } from "lucide-react";
+import { House, User, Lock, Loader2 } from "lucide-react";
+import { Button } from "../ui/button";
 
 const Form = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     const res = await signIn("credentials", {
       redirect: false,
@@ -21,9 +23,10 @@ const Form = () => {
     });
 
     if (res?.ok) {
-      window.location.href = "/";
+      return;
     } else {
       setError("Invalid email or password.");
+      setLoading(false);
     }
   };
 
@@ -45,30 +48,44 @@ const Form = () => {
           <Input
             type="email"
             placeholder="Email address"
-            className="pl-10 shadow"
+            className={`${error ? "border-red-400" : ""} pl-10 shadow`}
             name="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+              error && setError("");
+            }}
           />
         </div>
         <div className="relative flex w-full max-w-sm items-center">
           <Lock className="absolute top-1/2 left-3 h-5 w-5 -translate-y-1/2 text-gray-500" />
           <Input
             type="password"
-            placeholder="Password"
-            className="pl-10 shadow"
+            placeholder="password"
+            className={`${error ? "border-red-400" : ""} pl-10 shadow`}
             name="password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              error && setError("");
+            }}
           />
         </div>
       </div>
-      <button
-        type="submit"
-        className="cursor-pointer rounded bg-cyan-500 px-4 py-2 text-white hover:bg-cyan-600"
+      <Button
+        disabled={loading}
+        className="flex w-full cursor-pointer items-center justify-center bg-gradient-to-r from-cyan-500 to-blue-500 font-bold shadow"
+        variant="default"
       >
-        Sign In
-      </button>
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            Signing In...
+          </>
+        ) : (
+          "Sign In"
+        )}
+      </Button>
       {error && <div className="text-destructive text-center">{error}</div>}
     </form>
   );

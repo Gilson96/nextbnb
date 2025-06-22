@@ -38,7 +38,7 @@ model Room {
   roomPrice       Int
   roomAbout       String
 
-  placeId String @db.Uuid // <--- Add this line
+  placeId String @db.Uuid
   place   Place  @relation(fields: [placeId], references: [id], onDelete: Cascade)
 
   ownerId String?
@@ -49,9 +49,9 @@ model Room {
   roomGallery   RoomGallery[]
   Booking       Booking[]
   Wishlist      Wishlist[]
-  
-  hostId        String
-  Host          Host[]
+
+  hostId String
+  Host   Host   @relation(fields: [hostId], references: [id], onDelete: Cascade)
 }
 
 model RoomAmenities {

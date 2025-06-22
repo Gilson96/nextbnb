@@ -66,7 +66,6 @@ export async function signWithCredentials(
   }
 }
 
-// ✅ Sign Out User
 export async function signOutUser() {
   await signOut();
 }

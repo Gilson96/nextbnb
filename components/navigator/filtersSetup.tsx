@@ -1,7 +1,7 @@
 "use client";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlacesType } from "@/lib/actions/place.actions";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 type FilterLocationProps = {
   places: PlacesType[];
@@ -14,7 +14,7 @@ export const FilterLocation = ({
 }: FilterLocationProps) => {
   const newPlaces = [{ id: "1", placeName: "all" }, ...places];
   return (
-    <>  
+    <>
       <p className="font-bold">Location</p>
       <Tabs defaultValue="all" className="w-full">
         <TabsList>
@@ -24,7 +24,7 @@ export const FilterLocation = ({
               onClick={() => setLocation(place.placeName)}
               value={place.placeName}
             >
-              <p className="capitalize cursor-pointer">{place.placeName}</p>
+              <p className="cursor-pointer capitalize">{place.placeName}</p>
             </TabsTrigger>
           ))}
         </TabsList>

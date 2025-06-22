@@ -10,7 +10,6 @@ import { RxAvatar } from "react-icons/rx";
 import { signOut } from "next-auth/react";
 import { Session } from "next-auth";
 import Link from "next/link";
-import { useStore } from "@/store";
 
 type HeaderAccountProps = {
   session: Session | null;
@@ -30,7 +29,9 @@ const HeaderAccount = ({ session }: HeaderAccountProps) => {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => {signOut({ callbackUrl: "/" })}}
+            onClick={() => {
+              signOut({ callbackUrl: "/" });
+            }}
           >
             Logout
           </DropdownMenuItem>
@@ -39,6 +40,5 @@ const HeaderAccount = ({ session }: HeaderAccountProps) => {
     </>
   );
 };
-
 
 export default HeaderAccount;

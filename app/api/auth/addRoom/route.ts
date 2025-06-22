@@ -46,10 +46,10 @@ export async function POST(req: Request) {
       data: {
         roomDescription,
         roomType,
-        roomLatitude: parseFloat(roomLatitude),
-        roomLongitude: parseFloat(roomLongitude),
+        roomLatitude: Number(roomLatitude) || 0,
+        roomLongitude: Number(roomLongitude) || 0,
         roomLocation,
-        roomPrice: parseInt(roomPrice),
+        roomPrice: parseInt(roomPrice) || 0,
         roomAbout,
         ownerId: user.id,
         placeId: place.id,

@@ -7,11 +7,16 @@ import { ArrowLeft, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const page = () => {
+const Page = () => {
   const cart = useStore((state) => state.cart);
   const router = useRouter();
   const clearCart = useStore((state) => state.clearCart);
-  const [showSuccessModal, setShowSuccessModal] = useState<boolean>(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
+  const handleExit = () => {
+    router.back();
+    clearCart();
+  };
 
   return (
     <main className="flex w-full flex-col items-center justify-start p-[3%] text-base">
@@ -26,62 +31,38 @@ const page = () => {
       ) : (
         <>
           <Button
-            onClick={() => {
-              router.back();
-              clearCart();
-            }}
+            onClick={handleExit}
             className="cursor-pointer place-self-start rounded-full bg-neutral-300 text-base text-black hover:bg-neutral-400"
           >
             <p className="lg:hidden">Exit</p>
             <i className="max-lg:hidden">
-              {" "}
               <ArrowLeft />
             </i>
           </Button>
-          <div className="lg:hidden">
-            {cart.map((c, index) => (
-              <>
-                <RequestBook
-                  hostName={c.host.hostName}
-                  roomDescription={c.room.roomDescription}
-                  roomRating={Number(c.room.roomRating)}
-                  roomImage={c.image}
-                />
-                <PaymentMethod
-                  hostName={c.host.hostName}
-                  totalPrice={c.totalPrice}
-                  roomPrice={c.room.roomPrice}
-                  setShowSuccessModal={setShowSuccessModal}
-                  roomId={c.room.id}
-                  session={c.session}
-                />
-              </>
-            ))}
-          </div>
-          <div className="flex flex-col max-lg:hidden">
-            {cart.map((c, index) => (
-              <div className="flex items-center justify-between">
-                <PaymentMethod
-                  hostName={c.host.hostName}
-                  totalPrice={c.totalPrice}
-                  roomPrice={c.room.roomPrice}
-                  setShowSuccessModal={setShowSuccessModal}
-                  roomId={c.room.id}
-                  session={c.session}
-                />
-                <RequestBook
-                  hostName={c.host.hostName}
-                  roomDescription={c.room.roomDescription}
-                  roomRating={Number(c.room.roomRating)}
-                  roomImage={c.image}
-                />
-              </div>
-            ))}
-          </div>
+
+          {cart.map((c, index) => (
+            <div
+              key={index}
+              className={`flex ${index % 2 === 0 ? "lg:hidden" : "max-lg:hidden"} flex-col lg:flex-row lg:justify-between`}
+            >
+              <PaymentMethod
+                hostName={c.host.hostName}
+                totalPrice={c.totalPrice}
+                roomPrice={c.room.roomPrice}
+                setShowSuccessModal={setShowSuccessModal}
+                roomId={c.room.id}
+                session={c.session}
+              />
+              <RequestBook
+                hostName={c.host.hostName}
+                roomDescription={c.room.roomDescription}
+                roomRating={Number(c.room.roomRating)}
+                roomImage={c.image}
+              />
+            </div>
+          ))}
         </>
       )}
     </main>
   );
 };
-
-export default page;

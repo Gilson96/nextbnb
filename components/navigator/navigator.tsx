@@ -40,10 +40,12 @@ export default function Navigator({ places, rooms, session }: NavigatorProps) {
   ];
 
   const searchPlacesOrRooms = searchPool.filter((search) => {
+    const trimmedInput = inputValue.trim().toLocaleLowerCase();
+
     if (search.type === "place") {
-      return search.placeName.toLocaleLowerCase().includes(inputValue);
+      return search.placeName.toLocaleLowerCase().includes(trimmedInput);
     } else if (search.type === "room") {
-      return search.roomDescription.toLocaleLowerCase().includes(inputValue);
+      return search.roomDescription.toLocaleLowerCase().includes(trimmedInput);
     }
   });
 

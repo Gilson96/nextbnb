@@ -10,9 +10,9 @@ type HeaderDropdownProps = {
 export const TabPlaces = ({ places, setOpenInput }: HeaderDropdownProps) => {
   return (
     <>
-      {places?.map((place, index) => (
+      {places?.map((place) => (
         <Link
-          key={index}
+          key={place.id}
           className=""
           href={`/place/${place.placeName}/all/all`}
           onClick={() => setOpenInput(false)}

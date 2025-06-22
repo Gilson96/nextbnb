@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/store";
 import { Textarea } from "../ui/textarea";
+import { formatBookingDate } from "./formatBookingDate";
 
 type RequestBookProps = {
   roomDescription: string;
@@ -20,12 +21,6 @@ const RequestBook = ({
 }: RequestBookProps) => {
   const router = useRouter();
   const bookingDates = useStore((state) => state.bookingDates);
-
-  const startDate = bookingDates.startDate?.toDateString().slice(8, 10);
-  const endDate = bookingDates.endDate?.toDateString().slice(8, 10);
-  const month = bookingDates.endDate?.toDateString().slice(4, 7);
-  const year = bookingDates.endDate?.toDateString().slice(10, 15);
-  const formatDate = `${startDate}-${endDate} ${month} ${year}`;
 
   return (
     <section className="flex w-full flex-col items-center lg:mb-[6%]">
@@ -53,12 +48,16 @@ const RequestBook = ({
         <div className="flex w-full justify-between p-[3%]">
           <div className="flex flex-col">
             <p className="font-bold">Trip details</p>
-            <p>{formatDate}</p>
+            <p>
+              {bookingDates?.startDate &&
+                bookingDates?.endDate &&
+                formatBookingDate(bookingDates.startDate, bookingDates.endDate)}
+            </p>
             <p>1 adult</p>
           </div>
           <Button
             onClick={() => router.back()}
-            className="rounded-2xl bg-neutral-300 px-[4%] py-[6%] text-base text-black hover:bg-neutral-400 cursor-pointer"
+            className="cursor-pointer rounded-2xl bg-neutral-300 px-[4%] py-[6%] text-base text-black hover:bg-neutral-400"
           >
             Change
           </Button>

@@ -1,16 +1,15 @@
-import { roomTypes } from "@/db/data_pools";
 import { getRoomGallery } from "@/lib/actions/place.actions";
-import { HeartIcon, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Link from "next/link";
 
-type RooomListProps = {
+type RoomListProps = {
   roomDescription: string;
   roomRating: number;
   hostName: string;
   hostingYears: number;
   roomType: string;
   roomPrice: number;
-  id: string
+  id: string;
 };
 
 const RoomList = async ({
@@ -21,21 +20,25 @@ const RoomList = async ({
   hostName,
   id,
   hostingYears,
-}: RooomListProps) => {
-  const gallery = await getRoomGallery()
+}: RoomListProps) => {
+  const gallery = await getRoomGallery();
   const randomNumber = Math.floor(Math.random() * 3);
-  const findRoomImage = gallery.find(image => image.roomId === id)?.imageUrl.at(randomNumber)
-  
+  const roomImages = gallery.find((image) => image.roomId === id)?.imageUrl;
+  const findRoomImage = roomImages?.[randomNumber] || "/fallback.jpg";
+
   return (
     <Link href={`/room/${id}`}>
-      <div className="flex w-full flex-col">
-        <div 
-        style={{backgroundImage: `url(${findRoomImage})`}}
-        className="h-[15rem] w-[20rem] rounded-2xl bg-neutral-400 bg-no-repeat bg-cover bg-center">
-        </div>
+      <div className="flex w-full cursor-pointer flex-col">
+        <div
+          style={{ backgroundImage: `url(${findRoomImage})` }}
+          className="h-[15rem] w-[20rem] rounded-2xl bg-neutral-400 bg-cover bg-center bg-no-repeat"
+        ></div>
+
         <div className="flex w-full flex-col px-0.5 py-[2%]">
           <div className="flex items-center justify-between">
-            <p className="font-bold">{roomDescription}</p>
+            <p className="truncate font-bold" title={roomDescription}>
+              {roomDescription}
+            </p>
             <div className="flex items-center gap-1">
               <Star size={15} fill="black" />
               <p>{roomRating}</p>
@@ -47,7 +50,9 @@ const RoomList = async ({
             <span className="text-neutral-500">&#183;</span>
             <p>Hosting for {hostingYears} years</p>
           </div>
+
           <p className="text-sm font-bold">{roomType}</p>
+
           <div className="flex items-center">
             <div className="flex underline">
               <p className="font-bold">£{roomPrice}</p>

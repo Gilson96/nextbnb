@@ -36,15 +36,6 @@ declare module "next-auth/jwt" {
   }
 }
 
-const serializeRoom = (room: any): RoomsType => {
-  return {
-    ...room,
-    roomLatitude: Number(room.roomLatitude),
-    roomLongitude: Number(room.roomLongitude),
-    roomRating: Number(room.roomRating),
-  };
-};
-
 export const authConfig = {
   pages: {
     signIn: "/sign-in",
@@ -97,8 +88,9 @@ export const authConfig = {
         token.id = user.id;
         token.name = user.name;
         token.email = user.email;
+        token.wishlist = [];
+        token.booking = [];
       }
-
       return token;
     },
     async session({ session, token }) {

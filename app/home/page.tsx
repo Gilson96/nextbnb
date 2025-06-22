@@ -13,6 +13,7 @@ import Link from "next/link";
 import Filters from "@/components/navigator/filters";
 import { getServerSession } from "next-auth/next";
 import { authConfig } from "@/auth";
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const rooms: RoomsType[] = await getRooms();
@@ -20,12 +21,10 @@ export default async function Home() {
   const gallery: GalleryTypes[] = await getRoomGallery();
   const session = await getServerSession(authConfig);
 
-  const findImage = (roomId: string) => {
-    return gallery.filter((image) => image.roomId === roomId);
-  };
-
-  console.log(gallery[20].imageUrl.at(0));
-
+  if (!session) {
+    redirect("/");
+  }
+  
   return (
     <main className="w-full bg-white">
       <Navigator places={places} rooms={rooms} session={session} />
