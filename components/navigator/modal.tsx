@@ -57,7 +57,7 @@ const Modal = ({ places, rooms, setOpenInput }: ModalProps) => {
         <hr className="h-[1px] w-full bg-neutral-300" />
         <FilterPrice setPrice={setPrice} />
         <Link href={`/place/${location}/${type}/${price}`}>
-          <Button className="cursor-pointer">Confirm</Button>
+          <Button className="cursor-pointer bg-cyan-500">Confirm</Button>
         </Link>
       </TabsContent>
     </Tabs>

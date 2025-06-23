@@ -17,14 +17,14 @@ export const FilterLocation = ({
     <>
       <p className="font-bold">Location</p>
       <Tabs defaultValue="all" className="w-full">
-      <div className="overflow-x-auto w-full no-scrollbar">
-        <TabsList className="flex flex-nowrap w-max">
+      <div className="max-md:overflow-x-auto max-md:w-full max-md:no-scrollbar">
+        <TabsList className="max-md:flex max-md:flex-nowrap max-md:w-max">
           {newPlaces.map((place, index) => (
             <TabsTrigger
               key={index}
               onClick={() => setLocation(place.placeName)}
               value={place.placeName}
-              className="flex-shrink-0 px-4 whitespace-nowrap"
+              className="max-md:flex-shrink-0 max-md:px-4 max-md:whitespace-nowrap"
             >
               <p className="cursor-pointer capitalize">{place.placeName}</p>
             </TabsTrigger>
