@@ -53,7 +53,7 @@ export default function Navigator({ places, rooms, session }: NavigatorProps) {
     <div className="flex h-[5rem] w-full items-center justify-between border-b p-[2%] shadow">
       <Link
         href={"/home"}
-        className="flex items-start text-xl max-md:text-lg"
+        className="flex items-start text-xl max-md:text-base"
       >
         <p className="font-bold">Next</p>
         <p className="font-bold text-cyan-500">bnb</p>

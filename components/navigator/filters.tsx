@@ -41,7 +41,7 @@ const Filters = ({ places }: FiltersProps) => {
           <hr className="h-[1px] w-full bg-neutral-300" />
         </AlertDialogHeader>
 
-        <AlertDialogDescription>
+        <AlertDialogDescription className="overflow-hidden">
           <FilterLocation places={places} setLocation={setLocation} />
         </AlertDialogDescription>
 
