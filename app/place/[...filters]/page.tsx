@@ -3,9 +3,15 @@ import Navigator from "@/components/navigator/navigator";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
-const Place = async ({ params }: { params: { filters: string[] } }) => {
-  const [location, type, price] = params.filters;
+interface PageProps {
+  params: {
+    filters: string[];
+  };
+}
 
+const Place = async ({ params }: PageProps) => {
+ const [location, type, price] = params.filters;
+ 
   const rooms = await getRooms();
   const hosts = await getHosts();
   const places = await getPlaces();

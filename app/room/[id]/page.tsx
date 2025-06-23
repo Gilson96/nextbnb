@@ -21,8 +21,14 @@ import { getServerSession, Session } from "next-auth";
 import { authConfig } from "@/auth";
 import { StickyFooter } from "@/components/room/stickyFooter";
 
-const Room = async (props: { params: Promise<{ id: string }> }) => {
-  const { id } = await props.params;
+interface RoomProps {
+  params: {
+    id: string;
+  };
+}
+
+const Room = async ({ params }: RoomProps) => {
+  const { id } = params;
   const rooms: RoomsType[] = await getRooms();
   const hosts: HostsTypes[] = await getHosts();
   const image: GalleryTypes[] = await getRoomGallery();
@@ -91,14 +97,14 @@ const Room = async (props: { params: Promise<{ id: string }> }) => {
         <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
         <Maps findRoom={castRoomCoor} placeName={placeName!} />
         <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
-        <div className={`${!isAdminRoom? 'flex-row-reverse w-full justify-between' : 'hidden'}`}>
+        <div
+          className={`${!isAdminRoom ? "w-full flex-row-reverse justify-between" : "hidden"}`}
+        >
           <Reviews
             roomId={findRoom?.id!}
             roomRating={Number(findRoom?.roomRating)}
           />
-          <hr
-            className="h-[1px] w-[95%] place-self-center bg-neutral-300"
-          />
+          <hr className="h-[1px] w-[95%] place-self-center bg-neutral-300" />
           <Host
             hostId={findRoom?.hostId!}
             roomId={findRoom?.id!}
