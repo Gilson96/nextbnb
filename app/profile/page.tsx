@@ -38,7 +38,6 @@ const Profile = async () => {
   );
   const ownHouses = rooms.filter((room) => room.hostId === session?.user.id);
 
-  console.log(whichlist)
   return (
     <>
       <Navigator session={session} rooms={rooms} places={places} />
@@ -56,19 +55,13 @@ const Profile = async () => {
                 <p>trips</p>
               </div>
               <hr className="h-[1px] w-full text-neutral-400" />
-              {admin ? (
+              {admin && (
                 <>
                   <div className="flex flex-col">
                     <p className="text-xl font-bold">{ownHouses.length}</p>
-                    <p>Own houses</p>
-                  </div>
-                  <div className="flex flex-col">
-                    <p className="text-xl font-bold">4</p>
-                    <p>reviews</p>
+                    <p>houses</p>
                   </div>
                 </>
-              ) : (
-                <div></div>
               )}
             </div>
           </div>

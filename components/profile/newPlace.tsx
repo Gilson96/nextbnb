@@ -18,7 +18,7 @@ const NewPlace = ({ hostId }: { hostId: string }) => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add a new place</DialogTitle>
+          <DialogTitle className="text-start">Add a new place</DialogTitle>
           <Form hostId={hostId} />
         </DialogHeader>
       </DialogContent>

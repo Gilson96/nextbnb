@@ -139,10 +139,13 @@ const Form = ({ hostId }: { hostId: string }) => {
       />
 
       <div>
-        <Label htmlFor="roomAbout">Room About</Label>
+        <Label htmlFor="roomAbout" className="pb-[3%]">
+          Room About
+        </Label>
         <Textarea
           {...register("roomAbout")}
           placeholder="Enjoy a comfortable single room..."
+          className="max-md:w-[80%]"
         />
         {errors.roomAbout && (
           <p className="text-red-500">{errors.roomAbout.message}</p>
@@ -150,14 +153,16 @@ const Form = ({ hostId }: { hostId: string }) => {
       </div>
 
       <div>
-        <Label htmlFor="roomAmenites">Amenities</Label>
+        <Label htmlFor="roomAmenites" className="pb-[3%]">
+          Amenities
+        </Label>
         <input
           {...register("roomAmenities", {
             setValueAs: (v) =>
               v.split(",").map((amenity: string) => amenity.trim()),
           })}
           placeholder="e.g. Tv,Wi-fi,"
-          className="w-full rounded border p-2"
+          className="mr-[20%] w-full rounded border p-2 shadow max-md:w-[80%]"
         />
         {errors.roomAmenities && (
           <p className="text-red-500">{errors.roomAmenities?.message}</p>
@@ -166,7 +171,9 @@ const Form = ({ hostId }: { hostId: string }) => {
 
       {[0, 1, 2].map((index) => (
         <div key={index}>
-          <Label htmlFor={`gallery-${index}`}>Room Image {index + 1}</Label>
+          <Label htmlFor={`gallery-${index}`} className="pb-[3%]">
+            Room Image {index + 1}
+          </Label>
           <Controller
             control={control}
             name={`gallery.${index}`}
@@ -188,14 +195,15 @@ const Form = ({ hostId }: { hostId: string }) => {
           )}
         </div>
       ))}
-
-      <Button
-        type="submit"
-        className="cursor-pointer"
-        disabled={isSubmitting || uploading}
-      >
-        {isSubmitting || uploading ? "Submitting..." : "Add Room"}
-      </Button>
+      <div className="w-full flex justify-start">
+        <Button
+          type="submit"
+          className="cursor-pointer bg-cyan-500"
+          disabled={isSubmitting || uploading}
+        >
+          {isSubmitting || uploading ? "Submitting..." : "Add Room"}
+        </Button>
+      </div>
     </form>
   );
 };

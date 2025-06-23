@@ -11,7 +11,6 @@ import {
   RoomsType,
 } from "@/lib/actions/place.actions";
 import { BookingTypes } from "@/lib/actions/users.actions";
-import { useStore } from "@/store";
 import Image from "next/image";
 import Link from "next/link";
 

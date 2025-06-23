@@ -21,7 +21,7 @@ type WishlistProps = {
   rooms: RoomsType[];
   gallery: GalleryTypes[];
   hosts: HostsTypes[];
-  user: boolean
+  user: boolean;
 };
 
 const Bookings = ({ bookings, rooms, gallery, hosts, user }: WishlistProps) => {
@@ -29,11 +29,12 @@ const Bookings = ({ bookings, rooms, gallery, hosts, user }: WishlistProps) => {
 
   const handleBack = () => setSelectedBooking(null);
 
-  console.log(hosts)
   return (
     <Dialog>
       <DialogTrigger>
-        <div className={`${!user? 'w-[10rem]' : ''} flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow`}>
+        <div
+          className={`${!user ? "w-[10rem]" : ""} flex h-[7rem] cursor-pointer flex-col items-center justify-center rounded-2xl border shadow`}
+        >
           <MapPinHouse size={40} />
           <p>Past trips</p>
         </div>
@@ -58,7 +59,7 @@ const Bookings = ({ bookings, rooms, gallery, hosts, user }: WishlistProps) => {
 
                     return (
                       <div key={index}>
-                        <hr className="my-[1%] h-[0.5px] w-full bg-neutral-300" />
+                        <hr className="my-[2%] h-[0.5px] w-full bg-neutral-300" />
                         <div
                           className="flex cursor-pointer items-center gap-3"
                           onClick={() => setSelectedBooking(booking.id!)} // Set the selected booking
@@ -89,7 +90,6 @@ const Bookings = ({ bookings, rooms, gallery, hosts, user }: WishlistProps) => {
                   })}
                 </div>
               )}
-
               {/* Detail View */}
               {selectedBooking && (
                 <PastTrips

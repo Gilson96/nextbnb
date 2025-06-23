@@ -29,31 +29,36 @@ const Filters = ({ places }: FiltersProps) => {
       <AlertDialogTrigger>
         <SlidersHorizontal className="cursor-pointer" />
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="max-w-full overflow-x-hidden">
         <AlertDialogHeader>
           <AlertDialogTitle className="flex items-center justify-between">
             <p></p>
             <p className="font-bold">Filters</p>
-            <AlertDialogCancel className="shadow-none border-0 cursor-pointer">
-              {" "}
+            <AlertDialogCancel className="cursor-pointer border-0 shadow-none">
               <X />
             </AlertDialogCancel>
           </AlertDialogTitle>
           <hr className="h-[1px] w-full bg-neutral-300" />
         </AlertDialogHeader>
+
         <AlertDialogDescription>
           <FilterLocation places={places} setLocation={setLocation} />
         </AlertDialogDescription>
+
         <hr className="h-[1px] w-full bg-neutral-300" />
+
         <AlertDialogDescription>
           <FilterType setType={setType} />
         </AlertDialogDescription>
+
         <hr className="h-[1px] w-full bg-neutral-300" />
+
         <AlertDialogDescription>
           <FilterPrice setPrice={setPrice} />
         </AlertDialogDescription>
+
         <AlertDialogFooter>
-          <div className="flex justify-between">
+          <div className="flex justify-between pr-[5%]">
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <Link href={`/place/${location}/${type}/${price}`}>
               <AlertDialogAction className="cursor-pointer bg-cyan-500">

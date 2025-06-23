@@ -44,7 +44,7 @@ const RoomGallery = ({
                     style={{
                       backgroundImage: `url("${img}")`,
                     }}
-                    className={`flex h-[16rem] w-[27rem] items-start justify-between bg-cover bg-no-repeat pt-[4%] pr-[5%] pl-[3%] [@media(min-width:435px)_and_(max-width:767px)]:h-[30rem] [@media(min-width:435px)_and_(max-width:767px)]:w-[40rem]`}
+                    className={`flex h-[16rem] w-[27rem] items-start justify-between bg-cover bg-no-repeat pt-[5%] px-[5%] [@media(min-width:435px)_and_(max-width:767px)]:h-[30rem] [@media(min-width:435px)_and_(max-width:767px)]:w-[40rem]`}
                   >
                     <Link
                       href={"/"}
@@ -53,7 +53,7 @@ const RoomGallery = ({
                       <ArrowLeft size={20} />
                     </Link>
                     <button
-                      className="flex h-[2rem] w-[2rem] items-center justify-center rounded-full bg-neutral-300 shadow"
+                      className="flex h-[2rem] w-[2rem] mr-[15%] items-center justify-center rounded-full bg-neutral-300 shadow"
                       onClick={() => toggleWishlist(roomId)}
                       disabled={loading}
                     >

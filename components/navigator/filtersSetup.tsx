@@ -14,22 +14,23 @@ export const FilterLocation = ({
 }: FilterLocationProps) => {
   const newPlaces = [{ id: "1", placeName: "all" }, ...places];
   return (
-    <>
+    <div className="space-y-2">
       <p className="font-bold">Location</p>
       <Tabs defaultValue="all" className="w-full">
-        <TabsList>
+        <TabsList className="flex w-[99%] overflow-x-auto md:overflow-visible">
           {newPlaces.map((place, index) => (
             <TabsTrigger
               key={index}
               onClick={() => setLocation(place.placeName)}
               value={place.placeName}
+              className=""
             >
               <p className="cursor-pointer capitalize">{place.placeName}</p>
             </TabsTrigger>
           ))}
         </TabsList>
       </Tabs>
-    </>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 "use client";
-import { X } from "lucide-react";
+import { House, X } from "lucide-react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import Link from "next/link";
 import { useState } from "react";
@@ -51,7 +51,10 @@ export default function Navigator({ places, rooms, session }: NavigatorProps) {
 
   return (
     <div className="flex h-[5rem] w-full items-center justify-between border-b p-[2%] shadow">
-      <Link href={"/"} className="flex items-start text-xl max-[425px]:hidden">
+      <Link
+        href={"/home"}
+        className="flex items-start text-xl max-md:text-lg"
+      >
         <p className="font-bold">Next</p>
         <p className="font-bold text-cyan-500">bnb</p>
       </Link>

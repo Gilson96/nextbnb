@@ -3,9 +3,8 @@ import Navigator from "@/components/navigator/navigator";
 import RoomList from "@/components/place/roomList";
 import { getHosts, getPlaces, getRooms } from "@/lib/actions/place.actions";
 
-// Correctly typed props
 type PageProps = {
-  params: any; // Temporarily bypass type checking
+  params: any; 
 };
 
 const Place = async ({ params }: PageProps) => {
