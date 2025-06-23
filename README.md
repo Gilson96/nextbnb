@@ -138,5 +138,5 @@ http://localhost:3000 and use the credentials
 
 ## Contact
 
-* LinkedIn: [Your Profile](linkedin.com/in/gilson-de-almeida)
+* LinkedIn: [Profile](linkedin.com/in/gilson-de-almeida)
 ---
